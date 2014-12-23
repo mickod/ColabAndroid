@@ -1,9 +1,10 @@
-package com.example.colabandroid;
+package com.amodtech.colabandroid;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.colabandroid.videoContent.VideoItem;
+import com.amodtech.colabandroid.R;
+import com.amodtech.colabandroid.videoContent.VideoItem;
 
 import android.content.Context;
 import android.util.Log;

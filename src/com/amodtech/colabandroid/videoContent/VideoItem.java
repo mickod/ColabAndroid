@@ -1,4 +1,4 @@
-package com.example.colabandroid.videoContent;
+package com.amodtech.colabandroid.videoContent;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;

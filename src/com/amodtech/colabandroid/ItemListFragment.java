@@ -1,4 +1,4 @@
-package com.example.colabandroid;
+package com.amodtech.colabandroid;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,8 +24,8 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 
 
 
-import com.example.colabandroid.videoContent.VideoContent;
-import com.example.colabandroid.videoContent.VideoItem;
+import com.amodtech.colabandroid.videoContent.VideoContent;
+import com.amodtech.colabandroid.videoContent.VideoItem;
 
 /**
  * A list fragment representing a list of Items. This fragment

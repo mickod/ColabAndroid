@@ -1,4 +1,4 @@
-package com.example.colabandroid.videoContent;
+package com.amodtech.colabandroid.videoContent;
 
 import java.util.ArrayList;
 import java.util.HashMap;

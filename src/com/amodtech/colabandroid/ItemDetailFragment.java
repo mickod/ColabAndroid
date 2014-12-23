@@ -1,4 +1,4 @@
-package com.example.colabandroid;
+package com.amodtech.colabandroid;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -19,7 +19,8 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.example.colabandroid.videoContent.VideoItem;
+import com.amodtech.colabandroid.R;
+import com.amodtech.colabandroid.videoContent.VideoItem;
 
 /**
  * A fragment representing a single Item detail screen.
