@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ColabAndroid</string>
+    <string name="title_item_detail">Item Detail</string>
+    <string name="video_title_label">Title:</string>
+    <string name="video_format_label">Format:</string>
+    <string name="video_duration_label">Duration:</string>
+    <string name="video_file_size_label">File size:</string>
+    <string name="dist_time_label">Distribution time:</string>
+    <string name="compress_time_label">Compression time:</string>
+    <string name= "rebuild_time_label">Rebuild time:</string>
+    <string name="trans_time_label">Transmission time:</string>
+    <string name="play_button">Play</string>
+    <string name="stop_button">Stop</string>
+    <string name="upload_button">Upload</string>
+    <string name="colab_upload_button">Colab Upload</string>
+    <string name="stop_upload_button">Stop Upload</string>
+
+</resources>

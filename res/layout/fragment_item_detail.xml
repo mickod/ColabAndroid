@@ -1,0 +1,358 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp" >
+    
+    <!-- Top Area  -->
+    <LinearLayout 
+	    android:id="@+id/top_area"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp" >
+    
+	    <!-- Video Area in top area-->
+	    
+	    <FrameLayout
+	        android:layout_width="0dp"
+        	android:layout_height="match_parent"
+       		android:layout_weight="3">
+       		
+		    <VideoView
+		        android:id="@+id/video_area"
+		        android:padding="5dp"
+		        android:layout_height="wrap_content"
+		        android:layout_width="wrap_content"	        />
+		</FrameLayout>
+	     
+	    <!-- Button Area in top area -->
+		<LinearLayout 
+		    android:id="@+id/button_area"
+		    android:layout_weight="1"
+		    android:layout_marginRight="1dp"
+		    android:layout_marginLeft="20dp"
+	        android:orientation="vertical"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" >
+	
+	        <Button
+	            android:id="@+id/play_button"
+	            android:layout_width="fill_parent"
+	            android:layout_height="50dp"
+	            android:padding="10dp"
+	            android:layout_margin="4dp"
+	            android:text="@string/play_button" />
+	        
+	        <Button
+	            android:id="@+id/stop_button"
+	            android:layout_width="fill_parent"
+	            android:layout_height="50dp"
+	            android:padding="10dp"
+	            android:layout_margin="4dp"
+	            android:text="@string/stop_button" />
+	        
+	        <Button
+	            android:id="@+id/upload_button"
+	            android:layout_width="fill_parent"
+	            android:layout_height="50dp"
+	            android:padding="10dp"
+	            android:layout_margin="4dp"
+	            android:text="@string/upload_button" />
+	        
+	        <Button
+	            android:id="@+id/colab_upload_button"
+	            android:layout_width="fill_parent"
+	            android:layout_height="50dp"
+	            android:padding="10dp"
+	            android:layout_margin="4dp"
+	            android:text="@string/colab_upload_button" />
+	        
+	    	<Button
+	            android:id="@+id/stop_upload_button"
+	            android:layout_width="fill_parent"
+	            android:layout_height="50dp"
+	            android:padding="10dp"
+	            android:layout_margin="4dp"
+	            android:text="@string/stop_upload_button" />
+		</LinearLayout>
+	</LinearLayout>
+	
+    <!-- Middle Area  -->
+    <LinearLayout 
+	    android:id="@+id/middle_area"
+	    android:layout_below="@+id/top_area"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp" >
+    
+	    <!-- Video Info Area -->
+	    <LinearLayout
+	        android:id="@+id/video_info_area"
+	        android:layout_weight="1"
+	        android:orientation="vertical"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:padding="10dp" >
+	
+		    <!-- Video Title -->
+		    <LinearLayout
+		        android:id="@+id/video_title_area"
+		        android:orientation="horizontal"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent">
+		    
+				<TextView
+			        android:id="@+id/video_title_label"
+			        android:layout_width="wrap_content"
+					android:layout_weight="1"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp"
+			        android:text="@string/video_title_label"/>
+		        
+			    <TextView
+			        android:id="@+id/video_title"
+			        android:layout_width="wrap_content"
+			        android:layout_weight="7"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp" />
+			    
+			</LinearLayout>
+		 
+		    <!-- Video format -->
+		    <LinearLayout
+		        android:id="@+id/video_format_area"
+		        android:orientation="horizontal"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" >
+		    
+				<TextView
+			        android:id="@+id/video_format_label"
+			        android:layout_width="wrap_content"
+					android:layout_weight="1"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp"
+			        android:text="@string/video_format_label"/>
+		        
+			    <TextView
+			        android:id="@+id/video_format"
+			        android:layout_width="wrap_content"
+			        android:layout_weight="7"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp" />
+			    
+			</LinearLayout>
+
+		    <!-- Video Duration -->
+		   	<LinearLayout
+		        android:id="@+id/video_duration_area"
+		        android:orientation="horizontal"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" >
+		    
+				<TextView
+			        android:id="@+id/video_duration_label"
+			        android:layout_width="wrap_content"
+					android:layout_weight="1"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp"
+			        android:text="@string/video_duration_label"/>
+		        
+			    <TextView
+			        android:id="@+id/video_duration"
+			        android:layout_width="wrap_content"
+			        android:layout_weight="7"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp" />
+			    
+			</LinearLayout>
+			
+		    <!-- Video File Size -->
+		   	<LinearLayout
+		        android:id="@+id/video_file_size_area"
+		        android:orientation="horizontal"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" >
+		    
+				<TextView
+			        android:id="@+id/video_file_size_label"
+			        android:layout_width="wrap_content"
+					android:layout_weight="1"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp"
+			        android:text="@string/video_file_size_label"/>
+		        
+			    <TextView
+			        android:id="@+id/video_file_size"
+			        android:layout_width="wrap_content"
+			        android:layout_weight="7"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp" />
+			    
+			</LinearLayout>
+
+		</LinearLayout>
+		           
+	    <!-- Video progress area -->
+	    <LinearLayout 
+	        android:layout_weight="1"
+	        android:orientation="vertical"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:padding="10dp" >
+	
+		    <!-- Distribution time -->
+		    <LinearLayout
+		        android:id="@+id/dist_time_area"
+		        android:orientation="horizontal"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" >
+		    
+				<TextView
+			        android:id="@+id/dist_time_label"
+			        android:layout_width="wrap_content"
+					android:layout_weight="1"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp"
+			        android:text="@string/dist_time_label"/>
+		        
+			    <TextView
+			        android:id="@+id/dist_time"
+			        android:layout_width="wrap_content"
+			        android:layout_weight="7"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp" />
+			    
+			</LinearLayout>
+
+		    <!-- Compress Time -->
+		   	<LinearLayout
+		        android:id="@+id/compress_time_area"
+		        android:orientation="horizontal"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" >
+		    
+				<TextView
+			        android:id="@+id/compress_time_label"
+			        android:layout_width="wrap_content"
+					android:layout_weight="1"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp"
+			        android:text="@string/compress_time_label"/>
+		        
+			    <TextView
+			        android:id="@+id/compress_time"
+			        android:layout_width="wrap_content"
+			        android:layout_weight="7"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp" />
+			    
+			</LinearLayout>
+
+		    <!-- Rebuild Time -->
+		    <LinearLayout
+		        android:id="@+id/rebuild_time_area"
+		        android:orientation="horizontal"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" >
+		    
+				<TextView
+			        android:id="@+id/rebuild_time_label"
+			        android:layout_width="wrap_content"
+					android:layout_weight="1"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp"
+			        android:text="@string/rebuild_time_label"/>
+		        
+			    <TextView
+			        android:id="@+id/rebuild_time"
+			        android:layout_width="wrap_content"
+			        android:layout_weight="7"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp" />
+			    
+			</LinearLayout>
+
+		    
+		    <!-- Transmission Time -->
+		    <LinearLayout
+		        android:id="@+id/trans_time_area"
+		        android:orientation="horizontal"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" >
+		    
+				<TextView
+			        android:id="@+id/trans_time_label"
+			        android:layout_width="wrap_content"
+					android:layout_weight="1"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp"
+			        android:text="@string/trans_time_label"/>
+		        
+			    <TextView
+			        android:id="@+id/trans_time"
+			        android:layout_width="wrap_content"
+			        android:layout_weight="7"
+			        android:layout_height="40dp"
+			        android:layout_margin="5dp"
+			        android:textStyle="bold" 
+			        android:textSize="18sp" />
+			    
+			</LinearLayout>
+
+		</LinearLayout>
+	</LinearLayout> 
+    
+    <!-- Bottom Bar Area -->
+    <LinearLayout 
+	    android:id="@+id/bottom_area"
+	    android:layout_below="@+id/middle_area"
+	    android:orientation="horizontal"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+       	android:padding="10dp" >
+   
+    <!-- Progress bar in bottom area-->
+
+	    <ImageView
+	        android:id="@+id/progress_bar_area"
+	        android:padding="5dp"
+	        android:layout_height="40dp"
+	        android:layout_width="match_parent"
+	        android:layout_margin="5dp"
+	        android:background="@android:color/black" />
+    </LinearLayout> 
+  
+</RelativeLayout>
+
+
