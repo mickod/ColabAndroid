@@ -101,6 +101,7 @@
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libswresample/swresample.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libswresample/version.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/opt.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/channel_layout.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/audioconvert.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/channel_layout.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/parseutils.h \
@@ -118,6 +119,8 @@
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/imgutils.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/pixdesc.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/timestamp.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/time.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/threadmessage.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/bprint.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/avstring.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavformat/os_support.h \
@@ -153,6 +156,8 @@
  /Users/mickod/DevelopmentResources/android-ndk-r10/platforms/android-17/arch-arm/usr/include/termios.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/platforms/android-17/arch-arm/usr/include/linux/termios.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/platforms/android-17/arch-arm/usr/include/asm/termios.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/platforms/android-17/arch-arm/usr/include/pthread.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/platforms/android-17/arch-arm/usr/include/sched.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/cmdutils.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/config.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavcodec/avcodec.h \
@@ -160,7 +165,17 @@
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavformat/avformat.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libswscale/swscale.h \
  /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/avassert.h \
- /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/cmdutils_common_opts.h
+ /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/ffmpeg.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/cmdutils.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavformat/avio.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/avutil.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/dict.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/eval.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/fifo.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/pixfmt.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/rational.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/threadmessage.h \
+ /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libswresample/swresample.h
 
 /Users/mickod/DevelopmentResources/android-ndk-r10/platforms/android-17/arch-arm/usr/include/jni.h:
 
@@ -364,6 +379,8 @@
 
 /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/opt.h:
 
+/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/channel_layout.h:
+
 /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/audioconvert.h:
 
 /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/channel_layout.h:
@@ -397,6 +414,10 @@
 /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/pixdesc.h:
 
 /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/timestamp.h:
+
+/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/time.h:
+
+/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/threadmessage.h:
 
 /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/bprint.h:
 
@@ -468,6 +489,10 @@
 
 /Users/mickod/DevelopmentResources/android-ndk-r10/platforms/android-17/arch-arm/usr/include/asm/termios.h:
 
+/Users/mickod/DevelopmentResources/android-ndk-r10/platforms/android-17/arch-arm/usr/include/pthread.h:
+
+/Users/mickod/DevelopmentResources/android-ndk-r10/platforms/android-17/arch-arm/usr/include/sched.h:
+
 /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/cmdutils.h:
 
 /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/config.h:
@@ -482,4 +507,24 @@
 
 /Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/avassert.h:
 
-/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/cmdutils_common_opts.h:
+/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/ffmpeg.h:
+
+/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/cmdutils.h:
+
+/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavformat/avio.h:
+
+/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/avutil.h:
+
+/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/dict.h:
+
+/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/eval.h:
+
+/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/fifo.h:
+
+/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/pixfmt.h:
+
+/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/rational.h:
+
+/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/threadmessage.h:
+
+/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libswresample/swresample.h:

@@ -3,6 +3,7 @@
 
     <string name="app_name">ColabAndroid</string>
     <string name="title_item_detail">Item Detail</string>
+    <string name="title_compression_activity">Compression</string>
     <string name="video_title_label">Title:</string>
     <string name="video_format_label">Format:</string>
     <string name="video_duration_label">Duration:</string>

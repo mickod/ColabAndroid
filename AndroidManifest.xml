@@ -33,6 +33,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.colabandroid.ItemListActivity" />
         </activity>
+        <activity
+            android:name="com.amodtech.colabandroid.CompressionActivity"
+            android:label="@string/title_compression_activity"
+            android:parentActivityName=".ItemListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.colabandroid.ItemListActivity" />
+        </activity>
     </application>
 
 </manifest>

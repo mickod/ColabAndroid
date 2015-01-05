@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
@@ -14,7 +15,9 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -40,6 +43,7 @@ public class ItemDetailFragment extends Fragment {
     private MediaController mediaController;
     private VideoItem selectedVideoItem;
     private View rootView;
+    private Button uploadButton;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -122,6 +126,16 @@ public class ItemDetailFragment extends Fragment {
     	String vidFileSizeString = new DecimalFormat("0.00").format(vidFile.length()/1000000.0);
     	vidFileSize.setText(vidFileSizeString + " MB");
     	
+    	//Add the button listeners
+    	uploadButton = (Button) rootView.findViewById(R.id.upload_button);
+    	uploadButton.setOnClickListener(new OnClickListener(){
+    		@Override
+    		public void onClick(View v) {
+    			//Upload button has been clicked - start the compress and upload
+    			 Intent uploadIntent = new Intent(v.getContext(), CompressionActivity.class);
+    	         startActivity(uploadIntent);    
+    		}
+    	});
     	
         return rootView;
     }

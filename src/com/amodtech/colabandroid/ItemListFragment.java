@@ -133,7 +133,6 @@ public class ItemListFragment extends ListFragment implements LoaderManager.Load
 	    	int titleColumn_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE);
 	    	int pathColumn_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
 	    	int idColumn_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
-	    	videoCursor.moveToFirst();
 	    	int i = videoCursor.getCount();
 	    	Log.d("ItemListFragment", "onLoadFinished: videocursor count: " + i);
 	        while (videoCursor.moveToNext()) {
