@@ -94,7 +94,7 @@
 #include "/Users/mickod/DevelopmentResources/android-ndk-r10/sources/ffmpeg/libavutil/avassert.h"
 #include "ffmpeg.h"
 
-JNIEXPORT jstring JNICALL Java_com_amodtech_colabandroid_CompressionActivity_getMessage(JNIEnv *env, jobject thisObj) {
+JNIEXPORT jstring JNICALL Java_com_amodtech_colabandroid_FfmpegJNIWrapper_getMessage(JNIEnv *env, jobject thisObj) {
 
 		//Return data to Java calling method
 		return (*env)->NewStringUTF(env, "FFMPeg NDK Test Mule ... with added ffmpeg");
@@ -115,7 +115,7 @@ typedef struct VideoState {
 
 VideoState *gvs;
 
-JNIEXPORT jint JNICALL Java_com_amodtech_colabandroid_CompressionActivity_naInit(JNIEnv *pEnv, jobject pObj, jstring pfilename) {
+JNIEXPORT jint JNICALL Java_com_amodtech_colabandroid_FfmpegJNIWrapper_naInit(JNIEnv *pEnv, jobject pObj, jstring pfilename) {
 	// This function intialises the context for an input video
 	__android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "JNI naInit");
     char* gVideoFileName = (char *)(*pEnv)->GetStringUTFChars(pEnv, pfilename, NULL);
@@ -167,7 +167,7 @@ JNIEXPORT jint JNICALL Java_com_amodtech_colabandroid_CompressionActivity_naInit
 }
 
 
-JNIEXPORT jintArray JNICALL Java_com_amodtech_colabandroid_CompressionActivity_naGetVideoRes(JNIEnv *pEnv, jobject pObj) {
+JNIEXPORT jintArray JNICALL Java_com_amodtech_colabandroid_FfmpegJNIWrapper_naGetVideoRes(JNIEnv *pEnv, jobject pObj) {
 	//Function to get the video resolution, duration in seconds, and frame rate in frames per second
 	__android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "JNI naGetVideoRes");
 	jintArray lRes;
@@ -181,13 +181,13 @@ JNIEXPORT jintArray JNICALL Java_com_amodtech_colabandroid_CompressionActivity_n
 }
 
 
-JNIEXPORT jint JNICALL Java_com_amodtech_colabandroid_CompressionActivity_naGetDuration(JNIEnv *pEnv, jobject pObj) {
+JNIEXPORT jint JNICALL Java_com_amodtech_colabandroid_FfmpegJNIWrapper_naGetDuration(JNIEnv *pEnv, jobject pObj) {
 	//Function to return a video's duration in seconds
 	__android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "JNI naGetDuration");
     return (gvs->pFormatCtx->duration / AV_TIME_BASE);
 }
 
-JNIEXPORT jint JNICALL Java_com_amodtech_colabandroid_CompressionActivity_naGetFrameRate(JNIEnv *pEnv, jobject pObj) {
+JNIEXPORT jint JNICALL Java_com_amodtech_colabandroid_FfmpegJNIWrapper_naGetFrameRate(JNIEnv *pEnv, jobject pObj) {
 	//This function returns the video frame rate in frames per second
 	__android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "JNI naGetFrameRate");
     int fr;
@@ -204,7 +204,7 @@ JNIEXPORT jint JNICALL Java_com_amodtech_colabandroid_CompressionActivity_naGetF
     return fr;
 }
 
-JNIEXPORT jint JNICALL Java_com_amodtech_colabandroid_CompressionActivity_naFinish(JNIEnv *pEnv, jobject pObj) {
+JNIEXPORT jint JNICALL Java_com_amodtech_colabandroid_FfmpegJNIWrapper_naFinish(JNIEnv *pEnv, jobject pObj) {
 	//Closes files, codecs and frees resources
 	__android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "JNI naFinish");
     VideoState* vs = gvs;
@@ -4050,7 +4050,7 @@ static void log_callback_null(void *ptr, int level, const char *fmt, va_list vl)
 {
 }
 
-JNIEXPORT jint JNICALL Java_com_amodtech_colabandroid_CompressionActivity_ffmpegWrapper(JNIEnv *pEnv, jobject pObj, jobjectArray javaArgv) {
+JNIEXPORT jint JNICALL Java_com_amodtech_colabandroid_FfmpegJNIWrapper_ffmpegWrapper(JNIEnv *pEnv, jobject pObj, jobjectArray javaArgv) {
 
 	//Convert the argvString passd by the Java fucntion into the argv parameter vector that ffmpeg is expceting
     // malloc the array of char*. Note that argv[0] will be the program name ("ffmpeg")

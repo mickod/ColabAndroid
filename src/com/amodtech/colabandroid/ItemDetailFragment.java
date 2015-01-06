@@ -24,6 +24,7 @@ import android.widget.VideoView;
 
 import com.amodtech.colabandroid.R;
 import com.amodtech.colabandroid.videoContent.VideoItem;
+import com.amodtech.colabandroid.FfmpegJNIWrapper;
 
 /**
  * A fragment representing a single Item detail screen.
@@ -120,7 +121,7 @@ public class ItemDetailFragment extends Fragment {
     	TextView vidTitle = (TextView) rootView.findViewById(R.id.video_title);
     	vidTitle.setText(selectedVideoItem.videoTitle);
     	TextView vidFormat = (TextView) rootView.findViewById(R.id.video_format);
-    	vidFormat.setText("Unknown");
+    	vidFormat.setText(FfmpegJNIWrapper.getMessage());
     	TextView vidFileSize = (TextView) rootView.findViewById(R.id.video_file_size);
     	File vidFile = new File(selectedVideoItem.videoPath);
     	String vidFileSizeString = new DecimalFormat("0.00").format(vidFile.length()/1000000.0);
