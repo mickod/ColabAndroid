@@ -4,13 +4,11 @@ import java.io.File;
 import java.text.DecimalFormat;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,12 +25,13 @@ import com.amodtech.colabandroid.videoContent.VideoItem;
 import com.amodtech.colabandroid.FfmpegJNIWrapper;
 
 /**
- * A fragment representing a single Item detail screen.
- * This fragment is either contained in a {@link ItemListActivity}
+ * A fragment representing a single Video detail screen (from the standard Android
+ * two pane project template). This fragment is either contained in a {@link ItemListActivity}
  * in two-pane mode (on tablets) or a {@link ItemDetailActivity}
  * on handsets.
  */
-public class ItemDetailFragment extends Fragment implements CompressionTaskListener, OnClickListener {
+public class ItemDetailFragment extends Fragment implements CompressionTaskListener, 
+OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -45,6 +44,7 @@ public class ItemDetailFragment extends Fragment implements CompressionTaskListe
     private VideoItem selectedVideoItem;
     private View rootView;
     private Button uploadButton;
+    private CompressingFileSizeProgressTask compressingProgressTask;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -137,9 +137,11 @@ public class ItemDetailFragment extends Fragment implements CompressionTaskListe
     @Override
     public void onClick(View v) {
 		//Handle all button clicks on this fragement
+    	Log.d("ItemDetailFragment","onClick");
     	
     	if(v == rootView.findViewById(R.id.upload_button)) {
     		//Upload Button
+    		Log.d("ItemDetailFragment","onClick upload Button");
 			VideoCompressionTask compressTask = new VideoCompressionTask(this);
 			compressTask.execute(selectedVideoItem.videoPath);
 		}
@@ -152,17 +154,65 @@ public class ItemDetailFragment extends Fragment implements CompressionTaskListe
     	TextView progressMessageTextView = (TextView) rootView.findViewById(R.id.prog_message);
     	progressMessageTextView.setText("Compressed: " + compressedFilePath);
     	
-    	//Start the upload background task
+    	//Stop the compression progress monitoring asynchtask
+    	compressingProgressTask.cancel(true);
     	
+    	//Start the upload background task
+    	Log.d("ItemDetailFragment","onCompressionFinished: starting uploadTask");
+    	VideoUploadTask uploadTask = new VideoUploadTask(this);
+    	uploadTask.execute(compressedFilePath);	
     }
     
-    public void onCompressionPorgressUpdate(int compressedFileSize) {
+    public void onCompressionPorgressUpdate(String compressedFilePath) {
     	//Listener method - called when the compression task generates a progress
     	//event
+    	Log.d("ItemDetailFragment","onCompressionPorgressUpdate");
     	
-    	TextView compressTimeTextView = (TextView) rootView.findViewById(R.id.compress_time);
-    	compressTimeTextView.setText(compressedFileSize);
+    	//The progress event in this case is simply the path name of the file to be compressed
+    	//Start a new asynchtask to check the file size of this file and udate the UI regularly
+    	//durign the compression.
+    	TextView progressMessageTextView = (TextView) rootView.findViewById(R.id.prog_message);
+    	progressMessageTextView.setText(compressedFilePath);
+    	
+    	compressingProgressTask = new CompressingFileSizeProgressTask(this);
+    	//To allow multiple AsynchTasks execute in parallel the following 'executeonExecutor' call is required. It needs to be
+    	//used with caution to avoid the usual synchronization issues and also to avoid too many threads being created
+    	compressingProgressTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, compressedFilePath);
     }
+
+	@Override
+	public void onCompressingProgressFinished(Void params) {
+		//Do nothing - not expectng this to be called as we should have killed the Asynchtask before this
+		
+	}
+
+	@Override
+	public void onCompressingPorgressTaskUpdate(Long compressingFileSize) {
+		//Update the compressing file size
+		Log.d("ItemDetailFragment","onCompressingPorgressTaskUpdate");
+		
+    	TextView progressMessageTextView = (TextView) rootView.findViewById(R.id.prog_message);
+    	String vidFileSizeString = new DecimalFormat("0.00").format(compressingFileSize/1000000.0);
+    	progressMessageTextView.setText(vidFileSizeString + " MB");
+	}
+
+	@Override
+	public void onUploadFinished() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUploadPorgress(Long perCentComplete) {
+		//Called when the upload task is finished
+		
+		//The progress event in this case is simply the path name of the file to be compressed
+    	//Start a new asynchtask to check the file size of this file and udate the UI regularly
+    	//durign the compression.
+    	TextView progressMessageTextView = (TextView) rootView.findViewById(R.id.prog_message);
+    	progressMessageTextView.setText("Video Uploaded!!!");
+		
+	}
     
     
 }

@@ -8,6 +8,6 @@ public interface CompressionTaskListener {
 	public void onCompressionFinished(String compressedFilePath);
 	// called when the compression task has completed
 	
-	public void onCompressionPorgressUpdate(int compressedFileSize);
+	public void onCompressionPorgressUpdate(String compressedFilePath);
 
 }

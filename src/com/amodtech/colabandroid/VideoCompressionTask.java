@@ -1,14 +1,12 @@
 package com.amodtech.colabandroid;
 
-import java.lang.ref.WeakReference;
-
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
 import com.amodtech.colabandroid.FfmpegJNIWrapper;
 
-public class VideoCompressionTask extends AsyncTask<String, Void, String> {
+public class VideoCompressionTask extends AsyncTask<String, String, String> {
 	/* This Class is an AsynchTask to compress a video on a background thread
 	 * 
 	 */
@@ -22,17 +20,26 @@ public class VideoCompressionTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... videoPath) {
-    	// Decode image in background.
+    	//Compress the video in the background
+    	Log.d("VideoCompressionTask","doInBackground");
+    	
+    	//Report the compressed file path
+    	publishProgress(Environment.getExternalStorageDirectory() + "/CompressedBBB_320x180_aac.mp4");
     	
     	String argv[] = {"ffmpeg", "-i", Environment.getExternalStorageDirectory() + "/DCIM/Camera/BigBuckBunny_320x180.mp4", "-strict", "experimental", "-acodec", "aac", Environment.getExternalStorageDirectory() + "/CompressedBBB_320x180_aac.mp4"};
-    	Log.d("CompressionActivity onCreate","Calling ffmpegWrapper");
+    	Log.d("VideoCompressionTask","Calling ffmpegWrapper");
     	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.ffmpegWrapper(argv);
-    	Log.d("CompressionActivity onCreate","ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
+    	Log.d("VideoCompressionTask","ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
     	return("DONE");
     }
     
+    @Override
+    protected void onProgressUpdate(String... compressedFilePath) {
+    	thisTaskListener.onCompressionPorgressUpdate(compressedFilePath[0]);
+    }
     
-    protected void onPostExecute(Long result) {
+    @Override
+    protected void onPostExecute(String result) {
     	// Update the listener with the compressed video path
     	thisTaskListener.onCompressionFinished("Compessed Path...");
     }
