@@ -32,7 +32,7 @@ import com.amodtech.colabandroid.FfmpegJNIWrapper;
  * in two-pane mode (on tablets) or a {@link ItemDetailActivity}
  * on handsets.
  */
-public class ItemDetailFragment extends Fragment {
+public class ItemDetailFragment extends Fragment implements CompressionTaskListener, OnClickListener {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -129,15 +129,40 @@ public class ItemDetailFragment extends Fragment {
     	
     	//Add the button listeners
     	uploadButton = (Button) rootView.findViewById(R.id.upload_button);
-    	uploadButton.setOnClickListener(new OnClickListener(){
-    		@Override
-    		public void onClick(View v) {
-    			//Upload button has been clicked - start the compress and upload
-    			 Intent uploadIntent = new Intent(v.getContext(), CompressionActivity.class);
-    	         startActivity(uploadIntent);    
-    		}
-    	});
-    	
+    	uploadButton.setOnClickListener(this);
+    			
         return rootView;
     }
+    
+    @Override
+    public void onClick(View v) {
+		//Handle all button clicks on this fragement
+    	
+    	if(v == rootView.findViewById(R.id.upload_button)) {
+    		//Upload Button
+			VideoCompressionTask compressTask = new VideoCompressionTask(this);
+			compressTask.execute(selectedVideoItem.videoPath);
+		}
+	}
+    
+    public void onCompressionFinished(String compressedFilePath) {
+    	//Called when the compression asynch task has finished
+    	
+    	//Update the progress
+    	TextView progressMessageTextView = (TextView) rootView.findViewById(R.id.prog_message);
+    	progressMessageTextView.setText("Compressed: " + compressedFilePath);
+    	
+    	//Start the upload background task
+    	
+    }
+    
+    public void onCompressionPorgressUpdate(int compressedFileSize) {
+    	//Listener method - called when the compression task generates a progress
+    	//event
+    	
+    	TextView compressTimeTextView = (TextView) rootView.findViewById(R.id.compress_time);
+    	compressTimeTextView.setText(compressedFileSize);
+    }
+    
+    
 }
