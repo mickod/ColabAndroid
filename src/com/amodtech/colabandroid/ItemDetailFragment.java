@@ -9,6 +9,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -141,9 +142,12 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener {
     	
     	if(v == rootView.findViewById(R.id.upload_button)) {
     		//Upload Button
-    		Log.d("ItemDetailFragment","onClick upload Button");
-			VideoCompressionTask compressTask = new VideoCompressionTask(this);
-			compressTask.execute(selectedVideoItem.videoPath);
+    		//Log.d("ItemDetailFragment","onClick upload Button");
+			//VideoCompressionTask compressTask = new VideoCompressionTask(this);
+			//compressTask.execute(selectedVideoItem.videoPath);
+    		Log.d("ItemDetailFragment","onCompressionFinished: starting uploadTask");
+        	VideoUploadTask uploadTask = new VideoUploadTask(this);
+        	uploadTask.execute("http://www.bbc.com", Environment.getExternalStorageDirectory() + "/CompressedBBB_320x180_aac.mp4");	
 		}
 	}
     

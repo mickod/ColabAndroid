@@ -4142,9 +4142,9 @@ JNIEXPORT jint JNICALL Java_com_amodtech_colabandroid_FfmpegJNIWrapper_ffmpegWra
 	if ((decode_error_stat[0] + decode_error_stat[1]) * max_error_rate < decode_error_stat[1])
 		exit_program(69);
 
-	__android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "About to end and return main_return_code");
-	exit_program(received_nb_signals ? 255 : main_return_code);
-	return main_return_code;
+	__android_log_print(ANDROID_LOG_VERBOSE, APPNAME, " and return main_return_code");
+	return received_nb_signals ? 255 : main_return_code;
+	//return main_return_code;
 }
 
 
