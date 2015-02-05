@@ -46,6 +46,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener {
     private View rootView;
     private Button uploadButton;
     private CompressingFileSizeProgressTask compressingProgressTask;
+    private final int numberOfHelpers = 2;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -137,17 +138,40 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener {
     
     @Override
     public void onClick(View v) {
-		//Handle all button clicks on this fragement
+		//Handle all button clicks on this fragment
     	Log.d("ItemDetailFragment","onClick");
     	
     	if(v == rootView.findViewById(R.id.upload_button)) {
     		//Upload Button
-    		//Log.d("ItemDetailFragment","onClick upload Button");
+    		Log.d("ItemDetailFragment","onClick upload Button");
 			//VideoCompressionTask compressTask = new VideoCompressionTask(this);
 			//compressTask.execute(selectedVideoItem.videoPath);
     		Log.d("ItemDetailFragment","onCompressionFinished: starting uploadTask");
         	VideoUploadTask uploadTask = new VideoUploadTask(this);
         	uploadTask.execute("http://www.bbc.com", Environment.getExternalStorageDirectory() + "/CompressedBBB_320x180_aac.mp4");	
+		} else if (v == rootView.findViewById(R.id.colab_upload_button)) {
+    		Log.d("ItemDetailFragment","onClick colaborative upload Button");
+			//Colaborative upload button - first divide the video into chunks using ffmpeg
+			//Get the video duration first
+			String argv[] = {"ffmpeg", "-i", Environment.getExternalStorageDirectory() + "/DCIM/Camera/BigBuckBunny_320x180.mp4"};
+			Log.d("ItemDetailFragment","onClick colab upload: Calling ffmpegWrapper");
+	    	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.ffmpegWrapper(argv);
+	    	Log.d("ItemDetailFragment","onClick colab upload video lenght ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
+	    	
+	    	//Now break into chunks and distribute
+	    	VideoChunkDistributeTask distributionTaskArray[] = new VideoChunkDistributeTask[numberOfHelpers];
+    		for (int i=0; i<numberOfHelpers; i++) {
+    			//Create video chunk
+    			String argv1[] = {"ffmpeg", "-i", Environment.getExternalStorageDirectory() + "/DCIM/Camera/BigBuckBunny_320x180.mp4", 
+    					"-ss","00:00:00", "-t", "00:50:00",
+    					"-c","copy", Environment.getExternalStorageDirectory() +"videoChunk"+i+".mp4"};
+    			ffmpegWrapperreturnCode = FfmpegJNIWrapper.ffmpegWrapper(argv1);
+    	    	Log.d("ItemDetailFragment","onClick colab upload breaking into chunks ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
+    	    	
+    			//Now distribute the video chunk to the helper for compression
+    	    	distributionTaskArray[i] = new VideoChunkDistributeTask(this);
+    	    	distributionTaskArray[i].execute(Environment.getExternalStorageDirectory() + "videoChunk"+i+".mp4", String.valueOf(i));	
+    		}
 		}
 	}
     
