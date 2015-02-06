@@ -32,7 +32,7 @@ import com.amodtech.colabandroid.FfmpegJNIWrapper;
  * on handsets.
  */
 public class ItemDetailFragment extends Fragment implements CompressionTaskListener, 
-OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener {
+OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, VideoChunkDisributionTaskListener {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -239,6 +239,15 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener {
     	//durign the compression.
     	TextView progressMessageTextView = (TextView) rootView.findViewById(R.id.prog_message);
     	progressMessageTextView.setText("Video Uploaded!!!");
+		
+	}
+	
+	@Override
+	public void onCompressedChunkReady(String compressedChunkFileName) {
+		//Called when a chunk, compressed by an app helper, is ready
+		
+		//Check if we have all the chunks yet - if we do then put them together and start
+		//the upload task
 		
 	}
     
