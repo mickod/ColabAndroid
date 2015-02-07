@@ -47,6 +47,8 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     private Button uploadButton;
     private CompressingFileSizeProgressTask compressingProgressTask;
     private final int numberOfHelpers = 2;
+    private String chunkFileNames[] = new String[numberOfHelpers];
+	private int numberOfChunksReceivedCounter = 0;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -243,13 +245,44 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 	}
 	
 	@Override
-	public void onCompressedChunkReady(String compressedChunkFileName) {
+	public void onCompressedChunkReady(int chunkNumber, String compressedChunkFileName) {
 		//Called when a chunk, compressed by an app helper, is ready
+		
+		//Add the file name to the chunk file names array
+		if ( chunkNumber > 0 && chunkNumber < numberOfHelpers) {
+			chunkFileNames[chunkNumber] = compressedChunkFileName; 
+			numberOfChunksReceivedCounter++;
+		} else {
+			//Invalid chunk number for some reason...
+			Log.d("ItemDetailFragment onCompressedChunkReady","invlaid chunk number received");
+			return;
+		}
 		
 		//Check if we have all the chunks yet - if we do then put them together and start
 		//the upload task
+		if (numberOfChunksReceivedCounter < numberOfHelpers) {
+			return;
+		}
 		
+		StringBuilder chunkFileNamesStringBuilder = new StringBuilder();
+		//Build the list of files to conactonate for the ffmpeg command
+		for (int i=0; i<numberOfHelpers; i++) {
+			//add this chunk file name to the chunkNameString
+			chunkFileNamesStringBuilder.append(chunkFileNames[i]);
+		}
+		String chunkNamesString = chunkFileNamesStringBuilder.toString();
+		
+		//Use ffmpeg to concatonate the video files
+		final String compressedConactFileName = "compressedConcatChunks.mp4";
+    	String argv[] = {"ffmpeg", "-i", "concat:\"" + chunkNamesString+ "\"", "-codec", "copy", compressedConactFileName };
+    	Log.d("ItemDetailFragment onCompressedChunkReady","Calling ffmpegWrapper");
+    	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.ffmpegWrapper(argv);
+    	Log.d("ItemDetailFragment onCompressedChunkReady","ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
+    	
+    	//Start task to upload file
+    	Log.d("ItemDetailFragment","onCompressedChunkReady: starting uploadTask after all chunks received");
+    	VideoUploadTask uploadTask = new VideoUploadTask(this);
+    	uploadTask.execute(compressedConactFileName);	
 	}
-    
     
 }

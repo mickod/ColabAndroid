@@ -24,6 +24,7 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
 	 */
 	
 	private VideoChunkDisributionTaskListener thisTaskListener;
+	private int chunkNumber;
 	
 	public VideoChunkDistributeTask(VideoChunkDisributionTaskListener ourListener) {
 		//Constructor
@@ -43,7 +44,6 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
     	String videoChunkFileName;
     	String helperIpAddress = null;
     	final int helperPort = 8080;
-    	int chunkNumber;
     	if (params.length == 1) {
 	    	videoChunkFileName = params[0];
 	    	chunkNumber = Integer.parseInt(params[1]);
@@ -149,7 +149,7 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
     @Override
     protected void onPostExecute(String compressedFileName) {
     	// Update the listener with the compressed video path
-    	thisTaskListener.onCompressedChunkReady(compressedFileName);
+    	thisTaskListener.onCompressedChunkReady(chunkNumber, compressedFileName);
     }
 
 }

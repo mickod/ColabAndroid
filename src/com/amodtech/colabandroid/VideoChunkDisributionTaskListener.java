@@ -5,7 +5,7 @@ public interface VideoChunkDisributionTaskListener {
 	 * to helpers apps for compression
 	 */
 	
-	public void onCompressedChunkReady(String compressedChunkFileName);
+	public void onCompressedChunkReady(int chunkNumber, String compressedChunkFileName);
 	// called when the compressed video chunk is returned from helper
 
 
