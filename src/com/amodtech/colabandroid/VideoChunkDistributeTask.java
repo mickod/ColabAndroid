@@ -63,7 +63,7 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
     	    byte[] buffer = new byte[4096];
     	    
     	    //Write the video chunk to the output stream
-    	    //First open the file
+    	    //Open the file
     	    File videoChunkFile = new File(videoChunkFileName);
     	    BufferedInputStream chunkFileIS = new BufferedInputStream(new FileInputStream(videoChunkFile));
     	    
@@ -74,7 +74,7 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
     	    long chunkLength = videoChunkFile.length();
     	    helperSocketDOS.writeLong(chunkLength);
     	    
-    	    //No loop through the video chunk file sending it to the helper via the socket - note this will simply 
+    	    //Now loop through the video chunk file sending it to the helper via the socket - note this will simply 
     	    //do nothing if the file is empty
     	    int readCount;
     	    for (readCount = chunkFileIS.read(buffer); readCount < chunkLength; readCount = chunkFileIS.read(buffer)) {

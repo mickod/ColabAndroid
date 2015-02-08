@@ -48,7 +48,6 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     private CompressingFileSizeProgressTask compressingProgressTask;
     private final int numberOfHelpers = 2;
     private String chunkFileNames[] = new String[numberOfHelpers];
-	private int numberOfChunksReceivedCounter = 0;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -251,17 +250,17 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 		//Add the file name to the chunk file names array
 		if ( chunkNumber > 0 && chunkNumber < numberOfHelpers) {
 			chunkFileNames[chunkNumber] = compressedChunkFileName; 
-			numberOfChunksReceivedCounter++;
 		} else {
 			//Invalid chunk number for some reason...
 			Log.d("ItemDetailFragment onCompressedChunkReady","invlaid chunk number received");
 			return;
 		}
 		
-		//Check if we have all the chunks yet - if we do then put them together and start
-		//the upload task
-		if (numberOfChunksReceivedCounter < numberOfHelpers) {
-			return;
+		//Check if we have all the chunks yet by - if not just return
+		for (int j = 0; j < numberOfHelpers; j++) {
+			if (chunkFileNames[j] == null) {
+				return;
+			}
 		}
 		
 		StringBuilder chunkFileNamesStringBuilder = new StringBuilder();
