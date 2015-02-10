@@ -1,7 +1,8 @@
 package com.amodtech.colabandroid;
 
+import com.amodtech.yaandroidffmpegwrapper.FfmpegJNIWrapper;
+
 import android.app.Activity;
-import com.amodtech.colabandroid.FfmpegJNIWrapper;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;

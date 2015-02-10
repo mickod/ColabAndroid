@@ -14,8 +14,8 @@
     <string name="trans_time_label">Transmission time:</string>
     <string name="play_button">Play</string>
     <string name="stop_button">Stop</string>
-    <string name="upload_button">Upload</string>
-    <string name="colab_upload_button">Colab Upload</string>
+    <string name="upload_button">Compress and Upload</string>
+    <string name="colab_upload_button">Colab Compress and Upload</string>
     <string name="stop_upload_button">Stop Upload</string>
 
 </resources>

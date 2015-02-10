@@ -23,7 +23,7 @@ import android.widget.VideoView;
 
 import com.amodtech.colabandroid.R;
 import com.amodtech.colabandroid.videoContent.VideoItem;
-import com.amodtech.colabandroid.FfmpegJNIWrapper;
+import com.amodtech.yaandroidffmpegwrapper.FfmpegJNIWrapper;
 
 /**
  * A fragment representing a single Video detail screen (from the standard Android
@@ -145,8 +145,8 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     	if(v == rootView.findViewById(R.id.upload_button)) {
     		//Upload Button
     		Log.d("ItemDetailFragment","onClick upload Button");
-			//VideoCompressionTask compressTask = new VideoCompressionTask(this);
-			//compressTask.execute(selectedVideoItem.videoPath);
+			VideoCompressionTask compressTask = new VideoCompressionTask(this);
+			compressTask.execute(selectedVideoItem.videoPath);
     		Log.d("ItemDetailFragment","onCompressionFinished: starting uploadTask");
         	VideoUploadTask uploadTask = new VideoUploadTask(this);
         	uploadTask.execute("http://www.bbc.com", Environment.getExternalStorageDirectory() + "/CompressedBBB_320x180_aac.mp4");	

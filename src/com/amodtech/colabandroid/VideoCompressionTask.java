@@ -1,10 +1,10 @@
 package com.amodtech.colabandroid;
 
+import com.amodtech.yaandroidffmpegwrapper.FfmpegJNIWrapper;
+
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
-
-import com.amodtech.colabandroid.FfmpegJNIWrapper;
 
 public class VideoCompressionTask extends AsyncTask<String, String, String> {
 	/* This Class is an AsynchTask to compress a video on a background thread
