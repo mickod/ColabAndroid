@@ -40,6 +40,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 	
     public static final String ARG_VIDEO_TITLE = "video_title";
     public static final String  ARG_SELECTED_VIDEO_ITEM = "selected_video_item";
+    private final String colabServerURL = "http://ec2-54-154-12-124.eu-west-1.compute.amazonaws.com:3000" + "/web_video_upload";
     private VideoView videoPlayerView;
     private MediaController mediaController;
     private VideoItem selectedVideoItem;
@@ -146,10 +147,10 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     		//Upload Button
     		Log.d("ItemDetailFragment","onClick upload Button");
 			VideoCompressionTask compressTask = new VideoCompressionTask(this);
-			compressTask.execute(selectedVideoItem.videoPath);
+			//XXXXcompressTask.execute(selectedVideoItem.videoPath);
     		Log.d("ItemDetailFragment","onCompressionFinished: starting uploadTask");
         	VideoUploadTask uploadTask = new VideoUploadTask(this);
-        	uploadTask.execute("http://www.bbc.com", Environment.getExternalStorageDirectory() + "/CompressedBBB_320x180_aac.mp4");	
+        	uploadTask.execute(colabServerURL, Environment.getExternalStorageDirectory() + "/DCIM/Camera/BigBuckBunny_320x180.mp4");	
 		} else if (v == rootView.findViewById(R.id.colab_upload_button)) {
     		Log.d("ItemDetailFragment","onClick colaborative upload Button");
 			//Colaborative upload button - first divide the video into chunks using ffmpeg
