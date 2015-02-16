@@ -21,18 +21,22 @@ public class CompressingFileSizeProgressTask extends AsyncTask<String, Long, Voi
     @Override
     protected Void doInBackground(String... compressingFilePath) {
     	//In the background, check file size every second and report progress
-    	Log.d("CompressingFileSizeProgressTask","doInBackground");
+    	Log.d("CompressingFileSizeProgressTask","doInBackground. compressingFilePath: " + compressingFilePath[0]);
     	
     	//Loop continuously, checking and reporting the compressing file size every second
     	Long compressingFileSize;
     	compressingFile = new File(compressingFilePath[0]);
+    	Log.d("CompressingFileSizeProgressTask","doInBackground. got handle to file");
     	while(true) {
 	    	try {
 	    		//Sleep for one second and then check and report file size
+	    		Log.d("CompressingFileSizeProgressTask","doInBackground. about to sleep");
 	            Thread.sleep(1000);
+	            Log.d("CompressingFileSizeProgressTask","woke up");
 	        	compressingFileSize = compressingFile.length();
+	        	Log.d("CompressingFileSizeProgressTask","doInBackground. about to publis progress");
 	        	publishProgress(compressingFileSize);
-	
+	        	Log.d("CompressingFileSizeProgressTask","doInBackground. about to publis progress");
 	        } catch (InterruptedException e) {
 	            e.printStackTrace();
 	            return null;

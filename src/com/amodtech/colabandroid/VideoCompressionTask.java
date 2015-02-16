@@ -1,5 +1,7 @@
 package com.amodtech.colabandroid;
 
+import java.io.File;
+
 import com.amodtech.yaandroidffmpegwrapper.FfmpegJNIWrapper;
 
 import android.os.AsyncTask;
@@ -19,18 +21,47 @@ public class VideoCompressionTask extends AsyncTask<String, String, String> {
 	}
 
     @Override
-    protected String doInBackground(String... videoPath) {
+    protected String doInBackground(String... params) {
     	//Compress the video in the background
     	Log.d("VideoCompressionTask","doInBackground");
     	
-    	//Report the compressed file path
-    	publishProgress(Environment.getExternalStorageDirectory() + "/CompressedBBB_320x180_aac.mp4");
+    	//Get the the path of the video to compress
+    	String videoPath;
+    	String videoFileName;
+    	File videoFileToCompress;
+    	if (params.length == 1) {
+    		videoPath = params[0];
+    		videoFileToCompress = new File(videoPath);
+    		videoFileName = videoFileToCompress.getName();
+    	} else {
+    		//One or all of the params are not present - log an error and return
+    		Log.d("VideoCompressionTask","doInBackground wrong number of params");
+    		return null;
+    	}
     	
-    	String argv[] = {"ffmpeg", "-i", Environment.getExternalStorageDirectory() + "/DCIM/Camera/BigBuckBunny_320x180.mp4", "-strict", "experimental", "-acodec", "aac", Environment.getExternalStorageDirectory() + "/CompressedBBB_320x180_aac.mp4"};
-    	Log.d("VideoCompressionTask","Calling ffmpegWrapper");
+    	//Make sure the video to compress actually exists
+    	if(!videoFileToCompress.exists()) {
+    		Log.d("VideoCompressionTask","doInBackground video file to compress does not exist");
+    		return null;
+    	}
+    	
+    	
+    	//Report the compressed file path
+    	String compressedFilePath = Environment.getExternalStorageDirectory() + "/Comp_" + videoFileName;
+    	Log.d("VideoCompressionTask","doInBackground compressedFilePath: " + compressedFilePath);
+    	publishProgress(compressedFilePath);
+    	
+    	//If the compressed file already exists then delete it first and let this task create a new one
+    	File compressedVideoFile = new File(compressedFilePath);
+    	if(compressedVideoFile.exists()) {
+    		compressedVideoFile.delete();
+    	}
+    	
+    	String argv[] = {"ffmpeg", "-i", videoPath, "-strict", "experimental", "-acodec", "aac", compressedFilePath};
+    	Log.d("VideoCompressionTask","doInBackground Calling ffmpegWrapper");
     	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.ffmpegWrapper(argv);
-    	Log.d("VideoCompressionTask","ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
-    	return("DONE");
+    	Log.d("VideoCompressionTask","doInBackground ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
+    	return(compressedFilePath);
     }
     
     @Override
@@ -39,9 +70,9 @@ public class VideoCompressionTask extends AsyncTask<String, String, String> {
     }
     
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(String compFilePath) {
     	// Update the listener with the compressed video path
-    	thisTaskListener.onCompressionFinished("Compessed Path...");
+    	thisTaskListener.onCompressionFinished(compFilePath);
     }
 
 }

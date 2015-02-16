@@ -40,7 +40,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 	
     public static final String ARG_VIDEO_TITLE = "video_title";
     public static final String  ARG_SELECTED_VIDEO_ITEM = "selected_video_item";
-    private final String colabServerURL = "http://ec2-54-154-12-124.eu-west-1.compute.amazonaws.com:3000" + "/web_video_upload";
+    private final String colabServerURL = "http://ec2-54-154-201-229.eu-west-1.compute.amazonaws.com:3000" + "/web_video_upload";
     private VideoView videoPlayerView;
     private MediaController mediaController;
     private VideoItem selectedVideoItem;
@@ -147,10 +147,10 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     		//Upload Button
     		Log.d("ItemDetailFragment","onClick upload Button");
 			VideoCompressionTask compressTask = new VideoCompressionTask(this);
-			//XXXXcompressTask.execute(selectedVideoItem.videoPath);
-    		Log.d("ItemDetailFragment","onCompressionFinished: starting uploadTask");
-        	VideoUploadTask uploadTask = new VideoUploadTask(this);
-        	uploadTask.execute(colabServerURL, Environment.getExternalStorageDirectory() + "/DCIM/Camera/BigBuckBunny_320x180.mp4");	
+			compressTask.execute(selectedVideoItem.videoPath);
+    		//XXXX Log.d("ItemDetailFragment","onClick: starting uploadTask");
+        	//XXXX VideoUploadTask uploadTask = new VideoUploadTask(this);
+        	//XXXX uploadTask.execute(colabServerURL, Environment.getExternalStorageDirectory() + "/DCIM/Camera/BBB_trailer.mp4");	
 		} else if (v == rootView.findViewById(R.id.colab_upload_button)) {
     		Log.d("ItemDetailFragment","onClick colaborative upload Button");
 			//Colaborative upload button - first divide the video into chunks using ffmpeg
@@ -180,23 +180,23 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     public void onCompressionFinished(String compressedFilePath) {
     	//Called when the compression asynch task has finished
     	
+    	//Stop the compression progress monitoring asynchtask
+    	compressingProgressTask.cancel(true);
+    	
     	//Update the progress
     	TextView progressMessageTextView = (TextView) rootView.findViewById(R.id.prog_message);
     	progressMessageTextView.setText("Compressed: " + compressedFilePath);
     	
-    	//Stop the compression progress monitoring asynchtask
-    	compressingProgressTask.cancel(true);
-    	
     	//Start the upload background task
-    	Log.d("ItemDetailFragment","onCompressionFinished: starting uploadTask");
+    	Log.d("ItemDetailFragment","onCompressionFinished: starting uploadTask. compressedFilePath: " + compressedFilePath);
     	VideoUploadTask uploadTask = new VideoUploadTask(this);
-    	uploadTask.execute(compressedFilePath);	
+    	uploadTask.execute(colabServerURL, compressedFilePath);	
     }
     
     public void onCompressionPorgressUpdate(String compressedFilePath) {
     	//Listener method - called when the compression task generates a progress
     	//event
-    	Log.d("ItemDetailFragment","onCompressionPorgressUpdate");
+    	Log.d("ItemDetailFragment","onCompressionPorgressUpdate. compressedFilePath: " + compressedFilePath);
     	
     	//The progress event in this case is simply the path name of the file to be compressed
     	//Start a new asynchtask to check the file size of this file and udate the UI regularly

@@ -3,16 +3,18 @@ package com.amodtech.colabandroid;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -48,18 +50,18 @@ public class VideoUploadTask extends AsyncTask<String, String, Integer> {
     		return -1;
     	}
     	
+
     	//Create a new Multipart HTTP request to upload the video
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost(serverURL);
 
         //Create a Multipart entity and add the parts to it
         try {
-        	Log.d("VideoUploadTask doInBackground","Building the request");
+        	Log.d("VideoUploadTask doInBackground","Building the request for file: " + videoPath);
 	        FileBody filebodyVideo = new FileBody(new File(videoPath));
-	        StringBody title;
-			title = new StringBody("Filename: " + videoPath);
+	        StringBody title = new StringBody("Filename:" + videoPath);
 	        StringBody description = new StringBody("ColabAndroid test Video");
-	        MultipartEntity reqEntity = new MultipartEntity();
+	        MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 	        reqEntity.addPart("videoFile", filebodyVideo);
 	        reqEntity.addPart("title", title);
 	        reqEntity.addPart("description", description);
