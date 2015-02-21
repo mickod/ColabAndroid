@@ -58,14 +58,22 @@ public class VideoCompressionTask extends AsyncTask<String, String, String> {
     	}
     	
     	String argv[] = {"ffmpeg", "-i", videoPath, "-strict", "experimental", "-acodec", "aac", compressedFilePath};
+    	String argv2[] = {"ffmpeg", "-version"};
     	Log.d("VideoCompressionTask","doInBackground Calling ffmpegWrapper");
     	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.ffmpegWrapper(argv);
     	Log.d("VideoCompressionTask","doInBackground ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
+    	//XXXXLog.d("VideoCompressionTask","doInBackground Calling ffmpegWrapper for second time");
+    	//compressedVideoFile = new File(compressedFilePath);
+    	//compressedVideoFile.delete();
+    	//String argv2[] = {"ffmpeg", "-version"};
+    	//int ffmpegWrapperreturnCode = FfmpegJNIWrapper.ffmpegWrapper(argv2);
+    	//Log.d("VideoCompressionTask","doInBackground ffmpegWrapperreturnCode (secodn time): " + ffmpegWrapperreturnCode);
     	return(compressedFilePath);
     }
     
     @Override
     protected void onProgressUpdate(String... compressedFilePath) {
+    	Log.d("VideoCompressionTask","onProgressUpdate");
     	thisTaskListener.onCompressionPorgressUpdate(compressedFilePath[0]);
     }
     

@@ -40,7 +40,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 	
     public static final String ARG_VIDEO_TITLE = "video_title";
     public static final String  ARG_SELECTED_VIDEO_ITEM = "selected_video_item";
-    private final String colabServerURL = "http://ec2-54-154-201-229.eu-west-1.compute.amazonaws.com:3000" + "/web_video_upload";
+    private final String colabServerURL = "http://ec2-54-154-173-136.eu-west-1.compute.amazonaws.com:3000" + "/web_video_upload";
     private VideoView videoPlayerView;
     private MediaController mediaController;
     private VideoItem selectedVideoItem;
@@ -227,21 +227,23 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 	}
 
 	@Override
-	public void onUploadFinished() {
-		// TODO Auto-generated method stub
+	public void onUploadFinished(int result) {
+		//Called when the upload task is finished
 		
+		if (result > 0) {
+			//Update the progress message
+	    	TextView progressMessageTextView = (TextView) rootView.findViewById(R.id.prog_message);
+	    	progressMessageTextView.setText("Video Uploaded");
+		} else {
+			//Update progress with an error message
+	    	TextView progressMessageTextView = (TextView) rootView.findViewById(R.id.prog_message);
+	    	progressMessageTextView.setText("Error uploading video");
+		}
 	}
 
 	@Override
 	public void onUploadPorgress(Long perCentComplete) {
-		//Called when the upload task is finished
-		
-		//The progress event in this case is simply the path name of the file to be compressed
-    	//Start a new asynchtask to check the file size of this file and udate the UI regularly
-    	//durign the compression.
-    	TextView progressMessageTextView = (TextView) rootView.findViewById(R.id.prog_message);
-    	progressMessageTextView.setText("Video Uploaded!!!");
-		
+		//XXXX
 	}
 	
 	@Override

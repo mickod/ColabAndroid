@@ -107,17 +107,19 @@ public class VideoUploadTask extends AsyncTask<String, String, Integer> {
 		} else {
 			//Log that response code was null
 			Log.d("VideoUploadTask doInBackground","serverResponse = null");
+			return -1;
 		}
 
         //Shut down the connection manager
-        httpclient.getConnectionManager( ).shutdown( );  	
+        httpclient.getConnectionManager( ).shutdown( ); 
     	return 1;
     }
     
     @Override
     protected void onPostExecute(Integer result) {
-    	// Update the listener with the compressed video path
-    	thisTaskListener.onUploadFinished();
+    	//Check the return code and update the listener
+    	Log.d("VideoUploadTask onPostExecute","updating listener after execution");
+    	thisTaskListener.onUploadFinished(result);
     }
 
 }

@@ -10,7 +10,8 @@ public class CompressingFileSizeProgressTask extends AsyncTask<String, Long, Voi
 	 */
 	
 	private CompressingProgressTaskListener thisTaskListener;
-	File compressingFile;
+	private File compressingFile;
+	private volatile boolean running = true;
 	
 	public CompressingFileSizeProgressTask(CompressingProgressTaskListener ourListener) {
 		//Set the listener
@@ -27,7 +28,7 @@ public class CompressingFileSizeProgressTask extends AsyncTask<String, Long, Voi
     	Long compressingFileSize;
     	compressingFile = new File(compressingFilePath[0]);
     	Log.d("CompressingFileSizeProgressTask","doInBackground. got handle to file");
-    	while(true) {
+    	while(running) {
 	    	try {
 	    		//Sleep for one second and then check and report file size
 	    		Log.d("CompressingFileSizeProgressTask","doInBackground. about to sleep");
@@ -38,10 +39,18 @@ public class CompressingFileSizeProgressTask extends AsyncTask<String, Long, Voi
 	        	publishProgress(compressingFileSize);
 	        	Log.d("CompressingFileSizeProgressTask","doInBackground. about to publis progress");
 	        } catch (InterruptedException e) {
-	            e.printStackTrace();
+	        	//This is an expected exception if the task has been cancelled so no need to dump stack
+	        	Log.d("CompressingFileSizeProgressTask","doInBackground. InterruptedException");
 	            return null;
 	        }
     	}
+    	
+    	return null;
+    }
+   
+    @Override
+    protected void onCancelled() {
+        running = false;
     }
     
     @Override
