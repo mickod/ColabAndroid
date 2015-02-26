@@ -40,7 +40,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 	
     public static final String ARG_VIDEO_TITLE = "video_title";
     public static final String  ARG_SELECTED_VIDEO_ITEM = "selected_video_item";
-    private final String colabServerURL = "http://ec2-54-154-173-136.eu-west-1.compute.amazonaws.com:3000" + "/web_video_upload";
+    private final String colabServerURL = "http://ec2-52-16-55-251.eu-west-1.compute.amazonaws.com:3000" + "/web_video_upload";
     private VideoView videoPlayerView;
     private MediaController mediaController;
     private VideoItem selectedVideoItem;
@@ -125,7 +125,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     	TextView vidTitle = (TextView) rootView.findViewById(R.id.video_title);
     	vidTitle.setText(selectedVideoItem.videoTitle);
     	TextView vidFormat = (TextView) rootView.findViewById(R.id.video_format);
-    	vidFormat.setText(FfmpegJNIWrapper.getMessage());
+    	//XXXXvidFormat.setText(FfmpegJNIWrapper.getMessage());
     	TextView vidFileSize = (TextView) rootView.findViewById(R.id.video_file_size);
     	File vidFile = new File(selectedVideoItem.videoPath);
     	String vidFileSizeString = new DecimalFormat("0.00").format(vidFile.length()/1000000.0);
@@ -146,18 +146,18 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     	if(v == rootView.findViewById(R.id.upload_button)) {
     		//Upload Button
     		Log.d("ItemDetailFragment","onClick upload Button");
-			VideoCompressionTask compressTask = new VideoCompressionTask(this);
+			VideoCompressionTask compressTask = new VideoCompressionTask(this.getActivity(), this);
 			compressTask.execute(selectedVideoItem.videoPath);
-    		//XXXX Log.d("ItemDetailFragment","onClick: starting uploadTask");
-        	//XXXX VideoUploadTask uploadTask = new VideoUploadTask(this);
-        	//XXXX uploadTask.execute(colabServerURL, Environment.getExternalStorageDirectory() + "/DCIM/Camera/BBB_trailer.mp4");	
+    		//XXXX REMOVE Log.d("ItemDetailFragment","onClick: starting uploadTask");
+        	//XXXX REMOVEVideoUploadTask uploadTask = new VideoUploadTask(this);
+        	//XXXX REMOVE uploadTask.execute(colabServerURL, Environment.getExternalStorageDirectory() + "/DCIM/Camera/BBB_trailer.mp4");	
 		} else if (v == rootView.findViewById(R.id.colab_upload_button)) {
     		Log.d("ItemDetailFragment","onClick colaborative upload Button");
 			//Colaborative upload button - first divide the video into chunks using ffmpeg
 			//Get the video duration first
 			String argv[] = {"ffmpeg", "-i", Environment.getExternalStorageDirectory() + "/DCIM/Camera/BigBuckBunny_320x180.mp4"};
 			Log.d("ItemDetailFragment","onClick colab upload: Calling ffmpegWrapper");
-	    	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.ffmpegWrapper(argv);
+	    	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.call_ffmpegWrapper(this.getActivity(), argv);
 	    	Log.d("ItemDetailFragment","onClick colab upload video lenght ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
 	    	
 	    	//Now break into chunks and distribute
@@ -167,7 +167,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     			String argv1[] = {"ffmpeg", "-i", Environment.getExternalStorageDirectory() + "/DCIM/Camera/BigBuckBunny_320x180.mp4", 
     					"-ss","00:00:00", "-t", "00:50:00",
     					"-c","copy", Environment.getExternalStorageDirectory() +"videoChunk"+i+".mp4"};
-    			ffmpegWrapperreturnCode = FfmpegJNIWrapper.ffmpegWrapper(argv1);
+    			ffmpegWrapperreturnCode = FfmpegJNIWrapper.call_ffmpegWrapper(this.getActivity(), argv1);
     	    	Log.d("ItemDetailFragment","onClick colab upload breaking into chunks ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
     	    	
     			//Now distribute the video chunk to the helper for compression
@@ -190,7 +190,8 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     	//Start the upload background task
     	Log.d("ItemDetailFragment","onCompressionFinished: starting uploadTask. compressedFilePath: " + compressedFilePath);
     	VideoUploadTask uploadTask = new VideoUploadTask(this);
-    	uploadTask.execute(colabServerURL, compressedFilePath);	
+    	uploadTask.execute(colabServerURL, compressedFilePath);
+    	progressMessageTextView.setText("Uploading file: " + compressedFilePath);
     }
     
     public void onCompressionPorgressUpdate(String compressedFilePath) {
@@ -278,7 +279,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 		final String compressedConactFileName = "compressedConcatChunks.mp4";
     	String argv[] = {"ffmpeg", "-i", "concat:\"" + chunkNamesString+ "\"", "-codec", "copy", compressedConactFileName };
     	Log.d("ItemDetailFragment onCompressedChunkReady","Calling ffmpegWrapper");
-    	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.ffmpegWrapper(argv);
+    	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.call_ffmpegWrapper(this.getActivity(), argv);
     	Log.d("ItemDetailFragment onCompressedChunkReady","ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
     	
     	//Start task to upload file

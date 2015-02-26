@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.amodtech.yaandroidffmpegwrapper.FfmpegJNIWrapper;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
@@ -14,10 +15,12 @@ public class VideoCompressionTask extends AsyncTask<String, String, String> {
 	 */
 	
 	private CompressionTaskListener thisTaskListener;
+	private Context appContext;
 	
-	public VideoCompressionTask(CompressionTaskListener ourListener) {
+	public VideoCompressionTask(Context appCon, CompressionTaskListener ourListener) {
 		//Set the listener
 		thisTaskListener = ourListener;
+		this.appContext = appCon;
 	}
 
     @Override
@@ -58,16 +61,16 @@ public class VideoCompressionTask extends AsyncTask<String, String, String> {
     	}
     	
     	String argv[] = {"ffmpeg", "-i", videoPath, "-strict", "experimental", "-acodec", "aac", compressedFilePath};
-    	String argv2[] = {"ffmpeg", "-version"};
+    	String argv2[] = {"ffmpeg", "-i", videoPath, "-strict", "experimental", "-acodec", "aac", compressedFilePath};
+    	String argv3[] = {"ffmpeg", "-version"};
     	Log.d("VideoCompressionTask","doInBackground Calling ffmpegWrapper");
-    	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.ffmpegWrapper(argv);
+    	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.call_ffmpegWrapper(appContext, argv);
     	Log.d("VideoCompressionTask","doInBackground ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
-    	//XXXXLog.d("VideoCompressionTask","doInBackground Calling ffmpegWrapper for second time");
-    	//compressedVideoFile = new File(compressedFilePath);
-    	//compressedVideoFile.delete();
-    	//String argv2[] = {"ffmpeg", "-version"};
-    	//int ffmpegWrapperreturnCode = FfmpegJNIWrapper.ffmpegWrapper(argv2);
-    	//Log.d("VideoCompressionTask","doInBackground ffmpegWrapperreturnCode (secodn time): " + ffmpegWrapperreturnCode);
+    	//XXXX REMOVE Log.d("VideoCompressionTask","doInBackground Calling ffmpegWrapper for second time");
+    	//XXXX REMOVEcompressedVideoFile = new File(compressedFilePath);
+    	//XXXX REMOVEcompressedVideoFile.delete();
+    	//XXXX REMOVEffmpegWrapperreturnCode = FfmpegJNIWrapper.call_ffmpegWrapper(appContext, argv2);
+    	//XXXX REMOVELog.d("VideoCompressionTask","doInBackground ffmpegWrapperreturnCode (secodn time): " + ffmpegWrapperreturnCode);
     	return(compressedFilePath);
     }
     

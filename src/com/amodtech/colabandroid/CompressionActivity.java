@@ -25,14 +25,14 @@ public class CompressionActivity extends Activity {
     	
     	// Retrieve the text from native method getMessage()
     	Log.d("CompressionActivity onCreate","Setting Text with native method");
-    	Log.d("CompressionActivity onCreate","Text from native: " + FfmpegJNIWrapper.getMessage());
-    	textView.setText(FfmpegJNIWrapper.getMessage());
+    	//Log.d("CompressionActivity onCreate","Text from native: " + FfmpegJNIWrapper.getMessage());
+    	//textView.setText(FfmpegJNIWrapper.getMessage());
     	setContentView(textView);
     	Log.d("CompressionActivity onCreate","Content View set");
         	   	
     	// Init a video file 
-    	int videoInitReturnCode = FfmpegJNIWrapper.naInit(Environment.getExternalStorageDirectory() + "/9_Sec_BBBunny_Trailer.mp4");
-    	Log.d("CompressionActivity onCreate","videoInitReturnCode: " + videoInitReturnCode);
+    	//int videoInitReturnCode = FfmpegJNIWrapper.naInit(Environment.getExternalStorageDirectory() + "/9_Sec_BBBunny_Trailer.mp4");
+    	//Log.d("CompressionActivity onCreate","videoInitReturnCode: " + videoInitReturnCode);
     	
     	//Test ffmpeg.c wrapper
     	String argv_X1[] = {"ffmpeg", "-i", "movie.mov", "-vcodec", "copy", "-acodec", "copy", "out.mp4"};
@@ -42,7 +42,7 @@ public class CompressionActivity extends Activity {
     	String argv_X5[] = {"ffmpeg", "-i", Environment.getExternalStorageDirectory() + "/BigBuckBunny_320x180.mp4", "-acodec", "mp2", Environment.getExternalStorageDirectory() + "/CompressedBBB_320x180.mp4"};
     	String argv[] = {"ffmpeg", "-i", Environment.getExternalStorageDirectory() + "/DCIM/Camera/BigBuckBunny_320x180.mp4", "-strict", "experimental", "-acodec", "aac", Environment.getExternalStorageDirectory() + "/CompressedBBB_320x180_aac.mp4"};
     	Log.d("CompressionActivity onCreate","Calling ffmpegWrapper");
-    	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.ffmpegWrapper(argv);
-    	Log.d("CompressionActivity onCreate","ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
+    	//int ffmpegWrapperreturnCode = FfmpegJNIWrapper.ffmpegWrapper(argv);
+    	//Log.d("CompressionActivity onCreate","ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
    	}
 }
