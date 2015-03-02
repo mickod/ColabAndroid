@@ -46,6 +46,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     private VideoItem selectedVideoItem;
     private View rootView;
     private Button uploadButton;
+    private Button colabUploadButton;
     private CompressingFileSizeProgressTask compressingProgressTask;
     private final int numberOfHelpers = 2;
     private String chunkFileNames[] = new String[numberOfHelpers];
@@ -104,7 +105,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     	    public void onPrepared(MediaPlayer mp) {
     	    		//Set the video duration at this point as it is unknown before this
 	    	    	TextView vidDuration = (TextView) rootView.findViewById(R.id.video_duration);
-	    	    	int duration = videoPlayerView.getDuration();
+	    	    	int duration = videoPlayerView.getDuration()/1000;
 	    	    	String durationString = new DecimalFormat("0.00").format(duration/1000.0);
 	    	    	vidDuration.setText(durationString + " secs");
     	    	
@@ -133,7 +134,9 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     	
     	//Add the button listeners
     	uploadButton = (Button) rootView.findViewById(R.id.upload_button);
+    	colabUploadButton = (Button) rootView.findViewById(R.id.colab_upload_button);
     	uploadButton.setOnClickListener(this);
+    	colabUploadButton.setOnClickListener(this);
     			
         return rootView;
     }
@@ -148,31 +151,50 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     		Log.d("ItemDetailFragment","onClick upload Button");
 			VideoCompressionTask compressTask = new VideoCompressionTask(this.getActivity(), this);
 			compressTask.execute(selectedVideoItem.videoPath);
-    		//XXXX REMOVE Log.d("ItemDetailFragment","onClick: starting uploadTask");
-        	//XXXX REMOVEVideoUploadTask uploadTask = new VideoUploadTask(this);
-        	//XXXX REMOVE uploadTask.execute(colabServerURL, Environment.getExternalStorageDirectory() + "/DCIM/Camera/BBB_trailer.mp4");	
 		} else if (v == rootView.findViewById(R.id.colab_upload_button)) {
-    		Log.d("ItemDetailFragment","onClick colaborative upload Button");
-			//Colaborative upload button - first divide the video into chunks using ffmpeg
+			//Colaborative upload button
+			Log.d("ItemDetailFragment","onClick colaborative upload Button");
+			
+			//Delete any existing video chunk files
+			File videoChunkDir = Environment.getExternalStorageDirectory();
+			for(File chunkFile: videoChunkDir.listFiles()) {
+				//Check for a file with fileChunk...
+			    if(chunkFile.getName().startsWith("videoChunk_"))
+			    	chunkFile.delete();
+			}
+
 			//Get the video duration first
-			String argv[] = {"ffmpeg", "-i", Environment.getExternalStorageDirectory() + "/DCIM/Camera/BigBuckBunny_320x180.mp4"};
-			Log.d("ItemDetailFragment","onClick colab upload: Calling ffmpegWrapper");
-	    	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.call_ffmpegWrapper(this.getActivity(), argv);
-	    	Log.d("ItemDetailFragment","onClick colab upload video lenght ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
+	    	int videoDurationSecs = videoPlayerView.getDuration()/1000;
+	    	Log.d("ItemDetailFragment","onClick colab upload video lenght ffmpegWrapperreturnCode: " + videoDurationSecs);
 	    	
 	    	//Now break into chunks and distribute
 	    	VideoChunkDistributeTask distributionTaskArray[] = new VideoChunkDistributeTask[numberOfHelpers];
+			int chunkSize = videoDurationSecs/numberOfHelpers;
+			int startSecs = 0;
     		for (int i=0; i<numberOfHelpers; i++) {
     			//Create video chunk
-    			String argv1[] = {"ffmpeg", "-i", Environment.getExternalStorageDirectory() + "/DCIM/Camera/BigBuckBunny_320x180.mp4", 
-    					"-ss","00:00:00", "-t", "00:50:00",
-    					"-c","copy", Environment.getExternalStorageDirectory() +"videoChunk"+i+".mp4"};
-    			ffmpegWrapperreturnCode = FfmpegJNIWrapper.call_ffmpegWrapper(this.getActivity(), argv1);
-    	    	Log.d("ItemDetailFragment","onClick colab upload breaking into chunks ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
+    			String startTime = convertSecsToTimeString(startSecs);
+    			int endSecs = startSecs + ((i+1)*chunkSize);
+    			if (endSecs > videoDurationSecs) {
+    				//make sure rounding does not mean we go beyond end of video
+    				endSecs = videoDurationSecs;
+    			}
+    			String endTime = convertSecsToTimeString(endSecs);
+    			
+    			//Call ffmpeg to create this chunk of the video
+    			String argv[] = {"ffmpeg", "-i", selectedVideoItem.videoPath, 
+    					"-ss",startTime, "-t", endTime,
+    					"-c","copy", Environment.getExternalStorageDirectory() +"/videoChunk_"+i+".mp4"};
+    			Log.d("ItemDetailFragment","onClick colab upload argv: " + argv);
+    			int ffmpegWrapperReturnCode = FfmpegJNIWrapper.call_ffmpegWrapper(this.getActivity(), argv);
+    	    	Log.d("ItemDetailFragment","onClick colab upload breaking into chunks ffmpegWrapperreturnCode: " + ffmpegWrapperReturnCode);
     	    	
     			//Now distribute the video chunk to the helper for compression
-    	    	distributionTaskArray[i] = new VideoChunkDistributeTask(this);
-    	    	distributionTaskArray[i].execute(Environment.getExternalStorageDirectory() + "videoChunk"+i+".mp4", String.valueOf(i));	
+    	    	//XXXXdistributionTaskArray[i] = new VideoChunkDistributeTask(this);
+    	    	//XXXXdistributionTaskArray[i].execute(Environment.getExternalStorageDirectory() + "videoChunk"+i+".mp4", String.valueOf(i));	
+    	    	
+    	    	//Increment startSecs
+    	    	startSecs = endSecs +1;
     		}
 		}
 	}
@@ -287,5 +309,17 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     	VideoUploadTask uploadTask = new VideoUploadTask(this);
     	uploadTask.execute(compressedConactFileName);	
 	}
+	
+	String convertSecsToTimeString(int timeSeconds) {
+		//Convert number of seconds into hours:mins:seconds string
+		int hours = timeSeconds / 3600;
+		int mins = (timeSeconds % 3600) / 60;
+		int secs = timeSeconds % 60;
+		String timeString = String.format("%02d:%02d:%02d", hours, mins, secs);
+		Log.d("ItemDetailFragment","convertSecsToTimeString timeSeconds: " + timeSeconds + " timeString: " + timeString);
+		return timeString;
+	}
+
+
     
 }
