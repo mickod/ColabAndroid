@@ -43,11 +43,14 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
     	//Get the local video path from the parameters
     	String videoChunkFileName;
     	String helperIPAddress = null;
-    	final int helperPort = 8080;
+    	final int helperPort = 8888;
     	if (params.length == 3) {
 	    	videoChunkFileName = params[0];
 	    	chunkNumber = Integer.parseInt(params[1]);
 	    	helperIPAddress = params[2];
+	    	Log.d("VideoChunkDistributeTask doInBackground","videoChunkFileName: " + videoChunkFileName);
+	    	Log.d("VideoChunkDistributeTask doInBackground","chunkNumber: " + chunkNumber);	
+	    	Log.d("VideoChunkDistributeTask doInBackground","helperIPAddress: " + helperIPAddress);	
     	} else {
     		//One or all of the params are not present - log an error and return
     		Log.d("VideoChunkDistributeTask doInBackground","One or all of the params are not present");
@@ -59,6 +62,7 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
     	Socket helperSocket = null;
     	   
     	try {
+    		Log.d("VideoChunkDistributeTask doInBackground","connecting to: " + helperIPAddress + ":" + helperPort);
     	    helperSocket = new Socket(helperIPAddress, helperPort);
     	    BufferedOutputStream helperSocketBOS = new BufferedOutputStream(helperSocket.getOutputStream());
     	    byte[] buffer = new byte[4096];
@@ -83,6 +87,7 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
     	    	helperSocketDOS.write(buffer, 0, readCount);
     	    }
     	    
+    	    Log.d("VideoChunkDistributeTask doInBackground","file sent");
     	    chunkFileIS.close();
     	    helperSocketDOS.flush();
     	} catch (UnknownHostException e) {

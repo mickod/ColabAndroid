@@ -41,7 +41,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     public static final String ARG_VIDEO_TITLE = "video_title";
     public static final String  ARG_SELECTED_VIDEO_ITEM = "selected_video_item";
     private final String colabServerURL = "http://ec2-52-16-55-251.eu-west-1.compute.amazonaws.com:3000" + "/web_video_upload";
-    private final String helperIPAddresses[] = {"10.1.1.1", "10.1.1.1", "10.1.1.1"};
+    private final String helperIPAddresses[] = {"192.168.0.7", "10.1.1.1", "10.1.1.1"};
     private VideoView videoPlayerView;
     private MediaController mediaController;
     private VideoItem selectedVideoItem;
@@ -192,7 +192,8 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     	    	
     			//Now distribute the video chunk to the helper for compression
     	    	distributionTaskArray[i] = new VideoChunkDistributeTask(this);
-    	    	distributionTaskArray[i].execute(Environment.getExternalStorageDirectory() + "videoChunk"+i+".mp4", String.valueOf(i), helperIPAddresses[i]);	
+    	    	distributionTaskArray[i].execute(Environment.getExternalStorageDirectory() + "/videoChunk_"+i+".mp4", String.valueOf(i), helperIPAddresses[i]);	
+    	    	Log.d("ItemDetailFragment","onClick distributed chunk filename: " + "videoChunk_"+i+".mp4");
     	    	
     	    	//Increment startSecs
     	    	startSecs = endSecs +1;
