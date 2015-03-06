@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -43,7 +44,7 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
     	//Get the local video path from the parameters
     	String videoChunkFileName;
     	String helperIPAddress = null;
-    	final int helperPort = 8888;
+    	final int helperPort = 8080;
     	if (params.length == 3) {
 	    	videoChunkFileName = params[0];
 	    	chunkNumber = Integer.parseInt(params[1]);
@@ -56,7 +57,6 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
     		Log.d("VideoChunkDistributeTask doInBackground","One or all of the params are not present");
     		return null;
     	}
-    	String compressedChunkFileName = "CompressedChunk" + chunkNumber + ".mp4";
     	
     	//Send the video file to helper over a Socket connection so he helper can compress the video file 
     	Socket helperSocket = null;
@@ -69,6 +69,8 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
     	    
     	    //Write the video chunk to the output stream
     	    //Open the file
+    	    ////XXXX Test
+    	    //XXXX REMOVE String testFileName = Environment.getExternalStorageDirectory() +"/transtest.mp4";
     	    File videoChunkFile = new File(videoChunkFileName);
     	    BufferedInputStream chunkFileIS = new BufferedInputStream(new FileInputStream(videoChunkFile));
     	    
@@ -78,13 +80,17 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
     	    	     new BufferedOutputStream(helperSocket.getOutputStream()));
     	    long chunkLength = videoChunkFile.length();
     	    helperSocketDOS.writeLong(chunkLength);
+    	    Log.d("VideoChunkDistributeTask doInBackground","chunkLength: " + chunkLength);
     	    
     	    //Now loop through the video chunk file sending it to the helper via the socket - note this will simply 
     	    //do nothing if the file is empty
-    	    int readCount;
-    	    for (readCount = chunkFileIS.read(buffer); readCount < chunkLength; readCount = chunkFileIS.read(buffer)) {
+    	    int readCount = 0;
+    	    int totalReadCount = 0;
+    	    while(totalReadCount < chunkLength) {
     	    	//write the buffer to the output stream of the socket
+    	    	readCount = chunkFileIS.read(buffer);
     	    	helperSocketDOS.write(buffer, 0, readCount);
+    	    	totalReadCount += readCount;
     	    }
     	    
     	    Log.d("VideoChunkDistributeTask doInBackground","file sent");
@@ -96,41 +102,55 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
     	} catch (IOException e) {
     		Log.d("VideoChunkDistributeTask doInBackground","IO exceptiont");
     	    e.printStackTrace();
-    	} finally{
-    		//Tidy up
-    	    if(helperSocket != null){
-    	    	try {
-    	    		helperSocket.close();
-    	    	} catch (IOException e) {
-    	    		Log.d("VideoChunkDistributeTask doInBackground","Error closing socket");
-    	    		e.printStackTrace();
-    	    	}
-    	    }
     	}
     	
     	//File has been sent - now need to wait for a response
     	try {
-			BufferedInputStream helperSocketBIS = new BufferedInputStream(helperSocket.getInputStream());
-			DataInputStream helperSocketDIS = new DataInputStream(helperSocketBIS);
+    		Log.d("VideoChunkDistributeTask doInBackground","Waiting for response");
+			//BufferedInputStream helperSocketBIS = new BufferedInputStream(helperSocket.getInputStream());
+			DataInputStream helperSocketDIS = new DataInputStream(helperSocket.getInputStream());
 			
-			//Read in the file size of the compressedChunk - XXXXX if this does not block then use a readFully to read in a byte
-			//which indicates the compression is complete first
-			long compressedChunkFileSize = helperSocketDIS.readLong();
-			
-			//Now read the full compressed chunk over the socket and store it in a new file
-			File compressedChunkFile = new File(compressedChunkFileName);
+		    //The first part of the message should be the length of the file being transfered - read it first and
+		    //then write from the second byte onwards to the buffer
+		    //byte[] fileSizeBytes = new byte[Long.SIZE];
+		    //helperSocketDIS.readFully(fileSizeBytes, 0, Long.SIZE);
+		    //ByteBuffer bb = ByteBuffer.wrap(fileSizeBytes);
+		    long fileSize = helperSocketDIS.readLong();
+		    Log.d("VideoChunkDistributeTask doInBackground","Compressed chunk return fileSize: " + fileSize);
+		    
+		    //Now read in the rest of the file up to the final byte indicated by the size
+		    byte[] bytes = new byte[4096];
+		    String compressedChunkFileName = "CompressedChunk" + chunkNumber + ".mp4";
+			File compressedChunkFile = new File(Environment.getExternalStorageDirectory() +  "/" + compressedChunkFileName);
+			if(compressedChunkFile.exists()) {
+				//Delete the file and create a new one
+				boolean fileDeleted = compressedChunkFile.delete();
+				if (!fileDeleted) {
+					//log error and return
+					Log.d("MainActivity SocketServerThread Run","compressedChunkFile: old file not deleted");
+					return null;
+				}
+			}
 			BufferedOutputStream compressedChunkFileBOS = new BufferedOutputStream(new FileOutputStream(compressedChunkFile));
+		    long totalCount = 0;
+		    int thisReadCount = 0;
+		    while (totalCount < fileSize && (thisReadCount = helperSocketDIS.read(bytes)) != -1) {
+		    	totalCount += thisReadCount;
+		    	Log.d("VideoChunkDistributeTask doInBackground","totalCount received is: " + totalCount);
+		    	compressedChunkFileBOS.write(bytes, 0, thisReadCount);
+		    }
+		    //Write the final buffer read in - this is necessary as thisReadCount will be set to -1 
+		    //when the end of stream id detected even when it has read in some bytes while detecting the end
+		    //of stream
+		    compressedChunkFileBOS.write(bytes);
+		    Log.d("VideoChunkDistributeTask doInBackground","video file received");
+		    Log.d("VideoChunkDistributeTask doInBackground","totalCount: " + totalCount);
+		    Log.d("VideoChunkDistributeTask doInBackground","thisReadCount: " + thisReadCount);
 
-			byte[] buffer = new byte[4096];
-			int responseReadCount;
-    	    for (responseReadCount = helperSocketDIS.read(buffer); responseReadCount < compressedChunkFileSize; responseReadCount = helperSocketDIS.read(buffer)) {
-    	    	//write the buffer to the output stream of the socket
-    	    	compressedChunkFileBOS.write(buffer, 0, responseReadCount);
-    	    }
-    	    
-    	    //Tidy up
-    	    helperSocketDIS.close();
-    	    compressedChunkFileBOS.close();
+		    //Tidy up
+		    compressedChunkFileBOS.flush();
+		    compressedChunkFileBOS.close();
+		    helperSocketDIS.close();			    
     	    helperSocket.close();
     	    
     	} catch (IOException e) {

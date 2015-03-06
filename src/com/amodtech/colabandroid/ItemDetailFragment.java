@@ -41,7 +41,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     public static final String ARG_VIDEO_TITLE = "video_title";
     public static final String  ARG_SELECTED_VIDEO_ITEM = "selected_video_item";
     private final String colabServerURL = "http://ec2-52-16-55-251.eu-west-1.compute.amazonaws.com:3000" + "/web_video_upload";
-    private final String helperIPAddresses[] = {"192.168.0.7", "10.1.1.1", "10.1.1.1"};
+    private final String helperIPAddresses[] = {"192.168.1.66", "10.1.1.1", "10.1.1.1"};
     private VideoView videoPlayerView;
     private MediaController mediaController;
     private VideoItem selectedVideoItem;
@@ -49,7 +49,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     private Button uploadButton;
     private Button colabUploadButton;
     private CompressingFileSizeProgressTask compressingProgressTask;
-    private final int numberOfHelpers = 2;
+    private final int numberOfHelpers = 1;
     private String chunkFileNames[] = new String[numberOfHelpers];
 
     /**
@@ -166,11 +166,11 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 
 			//Get the video duration first
 	    	int videoDurationSecs = videoPlayerView.getDuration()/1000;
-	    	Log.d("ItemDetailFragment","onClick colab upload video lenght ffmpegWrapperreturnCode: " + videoDurationSecs);
+	    	Log.d("ItemDetailFragment","onClick colab upload video lenght: " + videoDurationSecs);
 	    	
 	    	//Now break into chunks and distribute
 	    	VideoChunkDistributeTask distributionTaskArray[] = new VideoChunkDistributeTask[numberOfHelpers];
-			int chunkSize = videoDurationSecs/numberOfHelpers;
+			int chunkSize = videoDurationSecs/(numberOfHelpers + 1);
 			int startSecs = 0;
     		for (int i=0; i<numberOfHelpers; i++) {
     			//Create video chunk
@@ -276,7 +276,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 		//Called when a chunk, compressed by an app helper, is ready
 		
 		//Add the file name to the chunk file names array
-		if ( chunkNumber > 0 && chunkNumber < numberOfHelpers) {
+		if ( chunkNumber >= 0 && chunkNumber < numberOfHelpers) {
 			chunkFileNames[chunkNumber] = compressedChunkFileName; 
 		} else {
 			//Invalid chunk number for some reason...
