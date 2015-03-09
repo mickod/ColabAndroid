@@ -156,12 +156,15 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 			//Colaborative upload button
 			Log.d("ItemDetailFragment","onClick colaborative upload Button");
 			
-			//Delete any existing video chunk files
+			//Delete any existing video chunk files and set the chunkfile names to zero
 			File videoChunkDir = Environment.getExternalStorageDirectory();
 			for(File chunkFile: videoChunkDir.listFiles()) {
 				//Check for a file with fileChunk...
 			    if(chunkFile.getName().startsWith("videoChunk_"))
 			    	chunkFile.delete();
+			}
+			for (int i=0; i<numberOfHelpers; i++) {
+				chunkFileNames[i] = null;
 			}
 
 			//Get the video duration first
@@ -274,6 +277,8 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 	@Override
 	public void onCompressedChunkReady(int chunkNumber, String compressedChunkFileName) {
 		//Called when a chunk, compressed by an app helper, is ready
+		Log.d("ItemDetailFragment onCompressedChunkReady","chunkNumber: " + chunkNumber);
+		Log.d("ItemDetailFragment onCompressedChunkReady","compressedChunkFileName: " + compressedChunkFileName);
 		
 		//Add the file name to the chunk file names array
 		if ( chunkNumber >= 0 && chunkNumber < numberOfHelpers) {
@@ -295,13 +300,13 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 		//Build the list of files to conactonate for the ffmpeg command
 		for (int i=0; i<numberOfHelpers; i++) {
 			//add this chunk file name to the chunkNameString
-			chunkFileNamesStringBuilder.append(chunkFileNames[i]);
+			chunkFileNamesStringBuilder.append(chunkFileNames[i] + ", ");
 		}
 		String chunkNamesString = chunkFileNamesStringBuilder.toString();
 		
 		//Use ffmpeg to concatonate the video files
 		final String compressedConactFileName = "compressedConcatChunks.mp4";
-    	String argv[] = {"ffmpeg", "-i", "concat:\"" + chunkNamesString+ "\"", "-codec", "copy", compressedConactFileName };
+    	String argv[] = {"ffmpeg", "-i", "concat:\"" + chunkNamesString + "\"", "-codec", "copy", compressedConactFileName };
     	Log.d("ItemDetailFragment onCompressedChunkReady","Calling ffmpegWrapper");
     	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.call_ffmpegWrapper(this.getActivity(), argv);
     	Log.d("ItemDetailFragment onCompressedChunkReady","ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
