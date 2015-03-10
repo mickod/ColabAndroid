@@ -1,6 +1,11 @@
 package com.amodtech.colabandroid;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 
 import android.content.Context;
@@ -298,15 +303,49 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 		
 		StringBuilder chunkFileNamesStringBuilder = new StringBuilder();
 		//Build the list of files to conactonate for the ffmpeg command
-		for (int i=0; i<numberOfHelpers; i++) {
-			//add this chunk file name to the chunkNameString
-			chunkFileNamesStringBuilder.append(chunkFileNames[i] + ", ");
+		//First create a concat.txt file
+		File concatFile = new File(Environment.getExternalStorageDirectory() +  "/" + "concat.txt");
+		if(concatFile.exists()) {
+			//Delete the file and create a new one
+			boolean fileDeleted = concatFile.delete();
+			if (!fileDeleted) {
+				//log error and return
+				Log.d("ItemDetailFragment onCompressedChunkReady","concatFile: old file not deleted");
+				return;
+			}
 		}
-		String chunkNamesString = chunkFileNamesStringBuilder.toString();
+		//Now add the chunk files to the concat.txt file
+		BufferedWriter concatFileBW;
+		try {
+			concatFileBW = new BufferedWriter(new FileWriter(concatFile));
+			for (int i=0; i<numberOfHelpers; i++) {
+				concatFileBW.write("file '" + Environment.getExternalStorageDirectory() + "/" + chunkFileNames[i] + "'\n");
+				//concatFileBW.write("file '" + Environment.getExternalStorageDirectory() + "/" + "Comp_20141217_231003.mp4" + "'\n"); //XXXX
+				Log.d("ItemDetailFragment onCompressedChunkReady","writing to concat.txt: " +
+						"file '" + Environment.getExternalStorageDirectory() + "/" + chunkFileNames[i]);
+			}
+			concatFileBW.flush();
+			concatFileBW.close();
+		} catch (IOException e) {
+			//Log the error
+			Log.d("ItemDetailFragment onCompressedChunkReady","concatFileBW: io Exception: " + e);
+			e.printStackTrace();
+			return;
+		}
 		
 		//Use ffmpeg to concatonate the video files
 		final String compressedConactFileName = "compressedConcatChunks.mp4";
-    	String argv[] = {"ffmpeg", "-i", "concat:\"" + chunkNamesString + "\"", "-codec", "copy", compressedConactFileName };
+		File compresseConcatFile = new File(Environment.getExternalStorageDirectory() +  "/" + compressedConactFileName);
+		if(compresseConcatFile.exists()) {
+			//Delete the file and create a new one
+			boolean fileDeleted = compresseConcatFile.delete();
+			if (!fileDeleted) {
+				//log error and return
+				Log.d("ItemDetailFragment onCompressedChunkReady","compresseConcatFile: old file not deleted");
+				return;
+			}
+		}
+    	String argv[] = {"ffmpeg", "-f", "concat", "-i", concatFile.getAbsolutePath(), "-codec", "copy", compresseConcatFile.getAbsolutePath() };
     	Log.d("ItemDetailFragment onCompressedChunkReady","Calling ffmpegWrapper");
     	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.call_ffmpegWrapper(this.getActivity(), argv);
     	Log.d("ItemDetailFragment onCompressedChunkReady","ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);

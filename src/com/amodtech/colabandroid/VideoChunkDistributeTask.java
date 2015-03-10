@@ -99,12 +99,15 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
     	} catch (UnknownHostException e) {
     		Log.d("VideoChunkDistributeTask doInBackground","unknown host");
     	    e.printStackTrace();
+    	    return null;
     	} catch (IOException e) {
     		Log.d("VideoChunkDistributeTask doInBackground","IO exceptiont");
     	    e.printStackTrace();
+    	    return null;
     	}
     	
     	//File has been sent - now need to wait for a response
+    	String compressedChunkFileName = null;
     	try {
     		Log.d("VideoChunkDistributeTask doInBackground","Waiting for response");
 			//BufferedInputStream helperSocketBIS = new BufferedInputStream(helperSocket.getInputStream());
@@ -120,7 +123,7 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
 		    
 		    //Now read in the rest of the file up to the final byte indicated by the size
 		    byte[] bytes = new byte[4096];
-		    String compressedChunkFileName = "CompressedChunk" + chunkNumber + ".mp4";
+		    compressedChunkFileName = "CompressedChunk" + chunkNumber + ".mp4";
 			File compressedChunkFile = new File(Environment.getExternalStorageDirectory() +  "/" + compressedChunkFileName);
 			if(compressedChunkFile.exists()) {
 				//Delete the file and create a new one
@@ -169,7 +172,7 @@ public class VideoChunkDistributeTask extends AsyncTask<String, String, String> 
     	}
 
     	//return the name of the compressed chunk file
-    	return "compressedChunkFileName";
+    	return compressedChunkFileName;
     }
     
     @Override
