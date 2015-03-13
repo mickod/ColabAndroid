@@ -46,7 +46,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     public static final String ARG_VIDEO_TITLE = "video_title";
     public static final String  ARG_SELECTED_VIDEO_ITEM = "selected_video_item";
     private final String colabServerURL = "http://ec2-52-16-55-251.eu-west-1.compute.amazonaws.com:3000" + "/web_video_upload";
-    private final String helperIPAddresses[] = {"192.168.1.66", "10.1.1.1", "10.1.1.1"};
+    private final String helperIPAddresses[] = {"192.168.1.66", "192.168.1.171", "10.1.1.1"};
     private VideoView videoPlayerView;
     private MediaController mediaController;
     private VideoItem selectedVideoItem;
@@ -54,7 +54,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     private Button uploadButton;
     private Button colabUploadButton;
     private CompressingFileSizeProgressTask compressingProgressTask;
-    private final int numberOfHelpers = 1;
+    private final int numberOfHelpers = 2;
     private String chunkFileNames[] = new String[numberOfHelpers];
 
     /**
@@ -198,9 +198,12 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     			int ffmpegWrapperReturnCode = FfmpegJNIWrapper.call_ffmpegWrapper(this.getActivity(), argv);
     	    	Log.d("ItemDetailFragment","onClick colab upload breaking into chunks ffmpegWrapperreturnCode: " + ffmpegWrapperReturnCode);
     	    	
-    			//Now distribute the video chunk to the helper for compression
+    			//Now distribute the video chunk to the helper for compression - to allow multiple AsynchTasks execute in parallel the 
+    	    	//'executeonExecutor' call is required. It needs to be used with caution to avoid the usual synchronization issues and also 
+    	    	//to avoid too many threads being created
     	    	distributionTaskArray[i] = new VideoChunkDistributeTask(this);
-    	    	distributionTaskArray[i].execute(Environment.getExternalStorageDirectory() + "/videoChunk_"+i+".mp4", String.valueOf(i), helperIPAddresses[i]);	
+    	    	//XXXX REMOVE distributionTaskArray[i].execute(Environment.getExternalStorageDirectory() + "/videoChunk_"+i+".mp4", String.valueOf(i), helperIPAddresses[i]);	
+    	    	distributionTaskArray[i].executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, Environment.getExternalStorageDirectory() + "/videoChunk_"+i+".mp4", String.valueOf(i), helperIPAddresses[i]);
     	    	Log.d("ItemDetailFragment","onClick distributed chunk filename: " + "videoChunk_"+i+".mp4");
     	    	
     	    	//Increment startSecs
@@ -297,6 +300,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 		//Check if we have all the chunks yet by - if not just return
 		for (int j = 0; j < numberOfHelpers; j++) {
 			if (chunkFileNames[j] == null) {
+				Log.d("ItemDetailFragment onCompressedChunkReady","All chunks not yet received - returning");
 				return;
 			}
 		}
