@@ -46,7 +46,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     public static final String ARG_VIDEO_TITLE = "video_title";
     public static final String  ARG_SELECTED_VIDEO_ITEM = "selected_video_item";
     private final String colabServerURL = "http://ec2-52-16-55-251.eu-west-1.compute.amazonaws.com:3000" + "/web_video_upload";
-    private final String helperIPAddresses[] = {"192.168.1.66", "192.168.1.171", "10.1.1.1"};
+    private final String helperIPAddresses[] = {"192.168.1.66", "192.168.1.171", "192.168.1.10"};
     private VideoView videoPlayerView;
     private MediaController mediaController;
     private VideoItem selectedVideoItem;
@@ -54,8 +54,12 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     private Button uploadButton;
     private Button colabUploadButton;
     private CompressingFileSizeProgressTask compressingProgressTask;
-    private final int numberOfHelpers = 2;
+    private final int numberOfHelpers = 3;
     private String chunkFileNames[] = new String[numberOfHelpers];
+    private long simpleCompressionStartTime = 0;
+    private long colabCompressionStartTime = 0;
+    private long uploadStartTime = 0;
+    private long totalElapsedStartTime = 0;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -153,8 +157,10 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     	Log.d("ItemDetailFragment","onClick");
     	
     	if(v == rootView.findViewById(R.id.upload_button)) {
-    		//Upload Button
+    		//Simple upload Button - start timing and compression task
     		Log.d("ItemDetailFragment","onClick upload Button");
+    		simpleCompressionStartTime = System.nanoTime();
+    		totalElapsedStartTime = simpleCompressionStartTime;
 			VideoCompressionTask compressTask = new VideoCompressionTask(this.getActivity(), this);
 			compressTask.execute(selectedVideoItem.videoPath);
 		} else if (v == rootView.findViewById(R.id.colab_upload_button)) {
@@ -171,6 +177,10 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 			for (int i=0; i<numberOfHelpers; i++) {
 				chunkFileNames[i] = null;
 			}
+			
+			//Start timing
+			colabCompressionStartTime = System.nanoTime();
+			totalElapsedStartTime = colabCompressionStartTime;
 
 			//Get the video duration first
 	    	int videoDurationSecs = videoPlayerView.getDuration()/1000;
@@ -215,6 +225,13 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     public void onCompressionFinished(String compressedFilePath) {
     	//Called when the compression asynch task has finished
     	
+    	//calculate the the compression time
+    	long simpleCompressionEndTime = System.nanoTime();
+    	long simpleCompressionTime = simpleCompressionEndTime - simpleCompressionStartTime;
+    	TextView compressionTimeTextView = (TextView) rootView.findViewById(R.id.compress_time);
+    	String compressTimeString = new DecimalFormat("0.000000").format(simpleCompressionTime/1000000000.0);
+    	compressionTimeTextView.setText(compressTimeString);
+    	
     	//Stop the compression progress monitoring asynchtask
     	compressingProgressTask.cancel(true);
     	
@@ -224,6 +241,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     	
     	//Start the upload background task
     	Log.d("ItemDetailFragment","onCompressionFinished: starting uploadTask. compressedFilePath: " + compressedFilePath);
+    	uploadStartTime = System.nanoTime();
     	VideoUploadTask uploadTask = new VideoUploadTask(this);
     	uploadTask.execute(colabServerURL, compressedFilePath);
     	progressMessageTextView.setText("Uploading file: " + compressedFilePath);
@@ -267,6 +285,21 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 		//Called when the upload task is finished
 		
 		if (result > 0) {
+			//Calculate upload time
+	    	long uploadEndTime = System.nanoTime();
+	    	long uploadTime = uploadEndTime - uploadStartTime;
+	    	TextView uploadTimeTextView = (TextView) rootView.findViewById(R.id.trans_time);
+	    	String uploadTimeString = new DecimalFormat("0.000000").format(uploadTime/1000000000.0);
+	    	uploadTimeTextView.setText(uploadTimeString);
+	    	uploadStartTime = 0;
+	    	
+	    	//Calculate the total elapsed time
+	    	long elpasedTime = uploadEndTime - totalElapsedStartTime;
+	    	TextView elpasedTimeTextView = (TextView) rootView.findViewById(R.id.dist_time);
+	    	String elapsedTimeString = new DecimalFormat("0.000000").format(elpasedTime/1000000000.0);
+	    	elpasedTimeTextView.setText(elapsedTimeString);
+	    	totalElapsedStartTime = 0;	    	
+	    	
 			//Update the progress message
 	    	TextView progressMessageTextView = (TextView) rootView.findViewById(R.id.prog_message);
 	    	progressMessageTextView.setText("Video Uploaded");
@@ -354,8 +387,16 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.call_ffmpegWrapper(this.getActivity(), argv);
     	Log.d("ItemDetailFragment onCompressedChunkReady","ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
     	
+    	//Calculate the total Colab Compress time
+    	long colabCompressionEndTime = System.nanoTime();
+    	long colabCompressionTime = colabCompressionEndTime - colabCompressionStartTime;
+    	TextView compressionTimeTextView = (TextView) rootView.findViewById(R.id.compress_time);
+    	String colabCompressTimeString = new DecimalFormat("0.000000").format(colabCompressionTime/1000000000.0);
+    	compressionTimeTextView.setText(colabCompressTimeString);
+    	
     	//Start task to upload file
     	Log.d("ItemDetailFragment","onCompressedChunkReady: starting uploadTask after all chunks received");
+    	uploadStartTime = System.nanoTime();
     	VideoUploadTask uploadTask = new VideoUploadTask(this);
     	uploadTask.execute(compressedConactFileName);	
 	}
