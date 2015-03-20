@@ -10,6 +10,8 @@
     <string name="video_file_size_label">File size:</string>
     <string name="dist_time_label">Distribution time:</string>
     <string name="compress_time_label">Compression time:</string>
+    <string name="upload_time_label">Upload time:</string>
+    <string name="total_elpased_time_label">Total elapsed time:</string>
     <string name= "rebuild_time_label">Rebuild time:</string>
     <string name="trans_time_label">Transmission time:</string>
     <string name="play_button">Play</string>

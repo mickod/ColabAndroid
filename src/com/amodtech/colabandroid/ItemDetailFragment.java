@@ -54,7 +54,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     private Button uploadButton;
     private Button colabUploadButton;
     private CompressingFileSizeProgressTask compressingProgressTask;
-    private final int numberOfHelpers = 3;
+    private final int numberOfHelpers = 1;
     private String chunkFileNames[] = new String[numberOfHelpers];
     private long simpleCompressionStartTime = 0;
     private long colabCompressionStartTime = 0;
@@ -161,6 +161,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     		Log.d("ItemDetailFragment","onClick upload Button");
     		simpleCompressionStartTime = System.nanoTime();
     		totalElapsedStartTime = simpleCompressionStartTime;
+    		clearTimingDisplays();
 			VideoCompressionTask compressTask = new VideoCompressionTask(this.getActivity(), this);
 			compressTask.execute(selectedVideoItem.videoPath);
 		} else if (v == rootView.findViewById(R.id.colab_upload_button)) {
@@ -181,6 +182,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 			//Start timing
 			colabCompressionStartTime = System.nanoTime();
 			totalElapsedStartTime = colabCompressionStartTime;
+			clearTimingDisplays();
 
 			//Get the video duration first
 	    	int videoDurationSecs = videoPlayerView.getDuration()/1000;
@@ -288,14 +290,14 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 			//Calculate upload time
 	    	long uploadEndTime = System.nanoTime();
 	    	long uploadTime = uploadEndTime - uploadStartTime;
-	    	TextView uploadTimeTextView = (TextView) rootView.findViewById(R.id.trans_time);
+	    	TextView uploadTimeTextView = (TextView) rootView.findViewById(R.id.upload_time);
 	    	String uploadTimeString = new DecimalFormat("0.000000").format(uploadTime/1000000000.0);
 	    	uploadTimeTextView.setText(uploadTimeString);
 	    	uploadStartTime = 0;
 	    	
 	    	//Calculate the total elapsed time
 	    	long elpasedTime = uploadEndTime - totalElapsedStartTime;
-	    	TextView elpasedTimeTextView = (TextView) rootView.findViewById(R.id.dist_time);
+	    	TextView elpasedTimeTextView = (TextView) rootView.findViewById(R.id.total_elapsed_time);
 	    	String elapsedTimeString = new DecimalFormat("0.000000").format(elpasedTime/1000000000.0);
 	    	elpasedTimeTextView.setText(elapsedTimeString);
 	    	totalElapsedStartTime = 0;	    	
@@ -411,6 +413,15 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 		return timeString;
 	}
 
-
+	private void clearTimingDisplays() {
+		//Clear all timing displays
+		TextView compressionTimeTextView = (TextView) rootView.findViewById(R.id.compress_time);
+    	compressionTimeTextView.setText("");
+    	TextView uploadTimeTextView = (TextView) rootView.findViewById(R.id.upload_time);
+    	uploadTimeTextView.setText("");
+    	TextView elpasedTimeTextView = (TextView) rootView.findViewById(R.id.total_elapsed_time);
+    	elpasedTimeTextView.setText("");
+	}
+	
     
 }

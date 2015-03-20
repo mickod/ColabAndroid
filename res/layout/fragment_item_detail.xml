@@ -220,34 +220,6 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:padding="10dp" >
-	
-		    <!-- Distribution time -->
-		    <LinearLayout
-		        android:id="@+id/dist_time_area"
-		        android:orientation="horizontal"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content" >
-		    
-				<TextView
-			        android:id="@+id/dist_time_label"
-			        android:layout_width="wrap_content"
-					android:layout_weight="1"
-			        android:layout_height="40dp"
-			        android:layout_margin="5dp"
-			        android:textStyle="bold" 
-			        android:textSize="18sp"
-			        android:text="@string/dist_time_label"/>
-		        
-			    <TextView
-			        android:id="@+id/dist_time"
-			        android:layout_width="wrap_content"
-			        android:layout_weight="7"
-			        android:layout_height="40dp"
-			        android:layout_margin="5dp"
-			        android:textStyle="bold" 
-			        android:textSize="18sp" />
-			    
-			</LinearLayout>
 
 		    <!-- Compress Time -->
 		   	<LinearLayout
@@ -277,25 +249,25 @@
 			    
 			</LinearLayout>
 
-		    <!-- Rebuild Time -->
+		    <!-- Upload Time -->
 		    <LinearLayout
-		        android:id="@+id/rebuild_time_area"
+		        android:id="@+id/upload_time_area"
 		        android:orientation="horizontal"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content" >
 		    
 				<TextView
-			        android:id="@+id/rebuild_time_label"
+			        android:id="@+id/upload_time_label"
 			        android:layout_width="wrap_content"
 					android:layout_weight="1"
 			        android:layout_height="40dp"
 			        android:layout_margin="5dp"
 			        android:textStyle="bold" 
 			        android:textSize="18sp"
-			        android:text="@string/rebuild_time_label"/>
+			        android:text="@string/upload_time_label"/>
 		        
 			    <TextView
-			        android:id="@+id/rebuild_time"
+			        android:id="@+id/upload_time"
 			        android:layout_width="wrap_content"
 			        android:layout_weight="7"
 			        android:layout_height="40dp"
@@ -308,23 +280,23 @@
 		    
 		    <!-- Transmission Time -->
 		    <LinearLayout
-		        android:id="@+id/trans_time_area"
+		        android:id="@+id/total_elapsed_time_area"
 		        android:orientation="horizontal"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content" >
 		    
 				<TextView
-			        android:id="@+id/trans_time_label"
+			        android:id="@+id/total_elpased_time_label"
 			        android:layout_width="wrap_content"
 					android:layout_weight="1"
 			        android:layout_height="40dp"
 			        android:layout_margin="5dp"
 			        android:textStyle="bold" 
 			        android:textSize="18sp"
-			        android:text="@string/trans_time_label"/>
+			        android:text="@string/total_elpased_time_label"/>
 		        
 			    <TextView
-			        android:id="@+id/trans_time"
+			        android:id="@+id/total_elapsed_time"
 			        android:layout_width="wrap_content"
 			        android:layout_weight="7"
 			        android:layout_height="40dp"
