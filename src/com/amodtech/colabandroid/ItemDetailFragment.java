@@ -21,10 +21,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
+import android.os.PowerManager;
 
 import com.amodtech.colabandroid.R;
 import com.amodtech.colabandroid.videoContent.VideoItem;
@@ -54,7 +56,7 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     private Button uploadButton;
     private Button colabUploadButton;
     private CompressingFileSizeProgressTask compressingProgressTask;
-    private final int numberOfHelpers = 1;
+    private final int numberOfHelpers = 3;
     private String chunkFileNames[] = new String[numberOfHelpers];
     private long simpleCompressionStartTime = 0;
     private long colabCompressionStartTime = 0;
@@ -72,6 +74,9 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     public void onCreate(Bundle savedInstanceState) {
     	Log.d("ItemDetailFragment","onCreate");
         super.onCreate(savedInstanceState);
+        
+        //Keep screen on
+        this.getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         if (getArguments().containsKey(ARG_SELECTED_VIDEO_ITEM)) {
             // Load the video content specified by the fragment
@@ -422,6 +427,5 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
     	TextView elpasedTimeTextView = (TextView) rootView.findViewById(R.id.total_elapsed_time);
     	elpasedTimeTextView.setText("");
 	}
-	
     
 }

@@ -63,6 +63,8 @@ public class VideoCompressionTask extends AsyncTask<String, String, String> {
     	String argv[] = {"ffmpeg", "-i", videoPath, "-strict", "experimental", "-acodec", "aac", compressedFilePath};
     	String argv2[] = {"ffmpeg", "-i", videoPath, "-strict", "experimental", "-acodec", "aac", compressedFilePath};
     	String argv3[] = {"ffmpeg", "-version"};
+    	String argv4[] = {"ffmpeg", "-i", videoPath,  "-i", Environment.getExternalStorageDirectory() + "/beetle.png", "-filter_complex",  "\"overlay=10:10\"", 
+    				compressedFilePath};
     	Log.d("VideoCompressionTask","doInBackground Calling ffmpegWrapper");
     	int ffmpegWrapperreturnCode = FfmpegJNIWrapper.call_ffmpegWrapper(appContext, argv);
     	Log.d("VideoCompressionTask","doInBackground ffmpegWrapperreturnCode: " + ffmpegWrapperreturnCode);
