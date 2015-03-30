@@ -195,17 +195,22 @@ OnClickListener, CompressingProgressTaskListener, VideoUploadTaskListener, Video
 	    	
 	    	//Now break into chunks and distribute
 	    	VideoChunkDistributeTask distributionTaskArray[] = new VideoChunkDistributeTask[numberOfHelpers];
-			int chunkSize = videoDurationSecs/(numberOfHelpers + 1);
+			int chunkSize = videoDurationSecs/(numberOfHelpers);
 			int startSecs = 0;
     		for (int i=0; i<numberOfHelpers; i++) {
     			//Create video chunk
     			String startTime = convertSecsToTimeString(startSecs);
-    			int endSecs = startSecs + ((i+1)*chunkSize);
-    			if (endSecs > videoDurationSecs) {
-    				//make sure rounding does not mean we go beyond end of video
+    			int endSecs = startSecs + chunkSize;
+    			if (i ==  (numberOfHelpers -1)) {
+    				//make sure the last chunk goes right to the 
+    				//end (neither shorter or longer)
     				endSecs = videoDurationSecs;
     			}
     			String endTime = convertSecsToTimeString(endSecs);
+    			Log.d("ItemDetailFragment","onClick startSecs: " + startSecs);
+    			Log.d("ItemDetailFragment","onClick startTime: " + startTime);
+    			Log.d("ItemDetailFragment","onClick endSecs: " + endSecs);
+    			Log.d("ItemDetailFragment","onClick endTime: " + endTime);
     			
     			//Call ffmpeg to create this chunk of the video
     			String argv[] = {"ffmpeg", "-i", selectedVideoItem.videoPath, 
